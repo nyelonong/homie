@@ -146,8 +146,10 @@ if claude auth status >/dev/null 2>&1; then
   done
 
   # galdr — the bespoke methodology pack (v0.1.0+; replaced superpowers + mattpocock).
-  # Local repo, no remote yet: copy/clone it to this path first on a new machine.
+  # Cloned over SSH (private repo) — on a brand-new machine this needs the generated
+  # SSH key registered on GitHub first; until then the step self-skips with a warning.
   GALDR_REPO="$HOME/Projects/personal/galdr"
+  [ -d "$GALDR_REPO/.git" ] || git_sync git@github.com:nyelonong/galdr.git "$GALDR_REPO" || true
   if [ -d "$GALDR_REPO/.claude-plugin" ]; then
     claude plugin marketplace add "$GALDR_REPO" >/dev/null 2>&1 || true
     claude plugin list 2>/dev/null | grep -q galdr || claude plugin install galdr@galdr-local >/dev/null 2>&1 || true
