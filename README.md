@@ -21,7 +21,7 @@ It installs Nix (Determinate), clones this repo to `~/homie` over HTTPS
 (read-only, no auth needed — it's public), generates an SSH key for pushing
 back later, then applies the right profile, installs claude-code and rtk, and
 sets up a curated baseline of Claude Code skills, plugins, and MCP servers
-(golang + TypeScript packs, superpowers, grill-me, design, LSPs, Context7, …).
+(golang + TypeScript packs, galdr — the bespoke methodology pack, design, LSPs, Context7, …).
 
 Everything is re-runnable — steps skip or harmlessly re-apply work already
 done. `PROFILE` overrides the OS-based default (`zaki` on macOS,

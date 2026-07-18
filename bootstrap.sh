@@ -124,12 +124,8 @@ find "$AGENTS_SKILLS/mastering-typescript-skill" -name SKILL.md | while IFS= rea
   link_skill "$(dirname "$f")"
 done
 
-# Matt Pocock — grill-me + the grilling skill it calls, nothing else
-git_sync https://github.com/mattpocock/skills.git "$AGENTS_SKILLS/mattpocock-skills"
-for s in grill-me grilling; do
-  d=$(find "$AGENTS_SKILLS/mattpocock-skills" -type d -name "$s" | head -1)
-  [ -n "$d" ] && link_skill "$d"
-done
+# Matt Pocock's pack and superpowers were retired 2026-07-19 — replaced by galdr,
+# the bespoke methodology pack (installed as a plugin in the auth-gated block below).
 
 # Plugins + MCP need a signed-in claude-code; on a fresh machine that hasn't
 # happened yet, so gate them and nudge rather than silently no-op. (The skill
@@ -140,7 +136,6 @@ if claude auth status >/dev/null 2>&1; then
     claude plugin marketplace add "$m" >/dev/null 2>&1 || true
   done
   for p in \
-    superpowers@claude-plugins-official \
     gopls-lsp@claude-plugins-official \
     typescript-lsp@claude-plugins-official \
     frontend-design@claude-plugins-official \
@@ -149,6 +144,20 @@ if claude auth status >/dev/null 2>&1; then
     warp@claude-code-warp; do
     claude plugin list 2>/dev/null | grep -q "$p" || claude plugin install "$p" >/dev/null 2>&1 || true
   done
+
+  # galdr — the bespoke methodology pack (v0.1.0+; replaced superpowers + mattpocock).
+  # Local repo, no remote yet: copy/clone it to this path first on a new machine.
+  GALDR_REPO="$HOME/Projects/personal/galdr"
+  if [ -d "$GALDR_REPO/.claude-plugin" ]; then
+    claude plugin marketplace add "$GALDR_REPO" >/dev/null 2>&1 || true
+    claude plugin list 2>/dev/null | grep -q galdr || claude plugin install galdr@galdr-local >/dev/null 2>&1 || true
+    # enable the SessionStart bootstrap (the flag file is gitignored, so a fresh
+    # install ships with the hook off; the trial gate passed 2026-07-19, so on)
+    d=$(ls -d "$HOME/.claude/plugins/cache/galdr-local/galdr"/*/ 2>/dev/null | sort -V | tail -1)
+    [ -n "$d" ] && touch "${d}hooks/enabled"
+  else
+    say "galdr repo missing at $GALDR_REPO — copy it over, re-run bootstrap (methodology pack skipped)"
+  fi
 
   # MCP: Context7 (live library docs), user scope
   claude mcp list 2>/dev/null | grep -qi context7 ||
