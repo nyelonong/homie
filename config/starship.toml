@@ -1,0 +1,115 @@
+add_newline = true
+command_timeout = 1000
+format = """
+╭─ ${custom.git_email}$directory$git_branch$git_status$fill$golang$nix_shell$direnv$package
+╰─ $character"""
+
+[character]
+success_symbol = '[➜](bold green) '
+error_symbol = '[✗](bold red) '
+
+[fill]
+symbol = '─'
+style = 'dimmed cyan'
+
+# ---
+
+# Shows the hostname
+[hostname]
+ssh_only = true
+format = "[$hostname](bold yellow) "
+disabled = false
+
+# Shows current directory
+[directory]
+truncation_length = 0
+truncation_symbol = "…/"
+home_symbol = " ~"
+read_only_style = "197"
+read_only = "  "
+truncate_to_repo = false
+format = "[$path]($style)[$read_only]($read_only_style) "
+
+[git_branch]
+symbol = ""
+format = "branch [$symbol$branch]($style) "
+truncation_symbol = "…/"
+style = "bold purple"
+
+[git_state]
+format = '[\($state( $progress_current of $progress_total)\)](bold red) '
+cherry_pick = 'PICKING'
+
+[git_status]
+format = '($all_status$ahead_behind)'
+conflicted  = '[conflict ](bold red)'
+ahead       = '[ahead ${count} ](cyan)'
+behind      = '[behind ${count} ](yellow)'
+diverged    = '[ahead ${ahead_count} ](cyan)[behind ${behind_count} ](yellow)'
+up_to_date  = ''
+untracked   = '[untracked ](yellow)'
+stashed     = '[stashed ](blue)'
+modified    = '[modified ](yellow)'
+staged      = '[staged ${count} ](green)'
+renamed     = '[renamed ](blue)'
+deleted     = '[deleted ](red)'
+disabled    = false
+
+[git_commit]
+commit_hash_length = 4
+tag_symbol = 'tag '
+
+[golang]
+format = 'Go [$symbol($version )($mod_version )]($style)'
+
+[nix_shell]
+disabled = false
+impure_msg = '[impure shell](bold red)'
+pure_msg = '[pure shell](bold green)'
+unknown_msg = '[unknown shell](bold yellow)'
+format = 'Nix [☃️ $state( \($name\))](bold blue) '
+
+[direnv]
+disabled = false
+
+[package]
+disabled = false
+format = 'via [🎁 $version](208 bold) '
+
+# Shows kubernetes context and namespace
+[kubernetes]
+format = 'via [ﴱ $context\($namespace\)](bold purple) '
+disabled = true
+
+[battery]
+full_symbol = "🔋"
+charging_symbol = "🔌"
+discharging_symbol = "⚡"
+
+[[battery.display]]
+threshold = 10
+style = 'bold red'
+
+[[battery.display]]
+threshold = 30
+style = 'bold yellow'
+discharging_symbol = '💦 '
+
+[gcloud]
+disabled = true
+symbol = '️ '
+format = 'on [$symbol$account(@$domain)(\($project\))]($style) '
+
+# Customs
+[custom.git_email]
+command = "git config user.email"
+when = "git rev-parse --git-dir 2> /dev/null"
+format = "[$output]($style) "
+style = "bright-yellow bold"
+
+# Disable some modules that aren't needed anymore
+[memory_usage]
+format = "$symbol[${ram}( | ${swap})]($style) "
+threshold = 70
+style = "bold dimmed white"
+disabled = true

@@ -1,0 +1,23 @@
+[user]
+	name = Muhammad Zaki Al-Afrani
+	email = zaki.afrani@gmail.com
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+[core]
+	editor = zed --wait
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	line-numbers = true
+[merge]
+	conflictstyle = zdiff3
+[alias]
+	l = log --graph --decorate --pretty=format:'%C(auto)%h %Cblue%ad %Cred%aN %C(auto)%d %n    %s' --date=human
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	cin = commit --amend --no-edit
+	fresh = "!f() { git fetch origin ${1} && git checkout -B ${1} origin/${1}; }; f"

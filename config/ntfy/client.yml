@@ -1,0 +1,3 @@
+# Replace with your own ntfy host (self-hosted or ntfy.sh). See
+# subscribe-notify.sh — the token comes from an untracked ~/.config/ntfy/token.env.
+default-host: https://ntfy.sh
