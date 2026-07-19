@@ -146,19 +146,18 @@ if claude auth status >/dev/null 2>&1; then
   done
 
   # galdr — the bespoke methodology pack (v0.1.0+; replaced superpowers + mattpocock).
-  # Cloned over SSH (private repo) — on a brand-new machine this needs the generated
-  # SSH key registered on GitHub first; until then the step self-skips with a warning.
-  GALDR_REPO="$HOME/Projects/personal/galdr"
-  [ -d "$GALDR_REPO/.git" ] || git_sync git@github.com:nyelonong/galdr.git "$GALDR_REPO" || true
-  if [ -d "$GALDR_REPO/.claude-plugin" ]; then
-    claude plugin marketplace add "$GALDR_REPO" >/dev/null 2>&1 || true
-    claude plugin list 2>/dev/null | grep -q galdr || claude plugin install galdr@galdr-local >/dev/null 2>&1 || true
+  # Marketplace added straight from the private GitHub repo (no local clone needed) —
+  # on a brand-new machine this needs the generated SSH key registered on GitHub
+  # first; until then the step self-skips with a warning.
+  claude plugin marketplace add nyelonong/galdr >/dev/null 2>&1 || true
+  if claude plugin marketplace list 2>/dev/null | grep -q nyelonong; then
+    claude plugin list 2>/dev/null | grep -q "galdr@nyelonong" || claude plugin install galdr@nyelonong >/dev/null 2>&1 || true
     # enable the SessionStart bootstrap (the flag file is gitignored, so a fresh
     # install ships with the hook off; the trial gate passed 2026-07-19, so on)
-    d=$(ls -d "$HOME/.claude/plugins/cache/galdr-local/galdr"/*/ 2>/dev/null | sort -V | tail -1)
+    d=$(ls -d "$HOME/.claude/plugins/cache/nyelonong/galdr"/*/ 2>/dev/null | sort -V | tail -1)
     [ -n "$d" ] && touch "${d}hooks/enabled"
   else
-    say "galdr repo missing at $GALDR_REPO — copy it over, re-run bootstrap (methodology pack skipped)"
+    say "galdr marketplace add failed — register the generated SSH key on GitHub, re-run bootstrap (methodology pack skipped)"
   fi
 
   # MCP: Context7 (live library docs), user scope
