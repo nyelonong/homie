@@ -27,6 +27,7 @@
       jq
       tealdeer
       ntfy-sh
+      herdr
 
       # fonts
       pkgs.nerd-fonts.fira-code

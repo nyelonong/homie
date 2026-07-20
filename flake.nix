@@ -11,12 +11,18 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # herdr: exposes an overlay, applied to nixpkgs below so home.nix can just
+    # reference pkgs.herdr. follows nixpkgs to avoid a second nixpkgs copy.
+    herdr = {
+      url = "github:ogulcancelik/herdr";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # In this context, outputs are mostly about getting home-manager what it
   # needs since it will be the one using the flake
   outputs =
-    { nixpkgs, home-manager, ... }:
+    { nixpkgs, home-manager, herdr, ... }:
     let
       mkHome =
         system: extra:
@@ -24,6 +30,7 @@
           pkgs = import nixpkgs {
             inherit system;
             config.allowUnfree = true;
+            overlays = [ herdr.overlays.default ];
           };
           modules = [ ./home.nix ] ++ extra;
         };
