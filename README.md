@@ -1,13 +1,65 @@
-# homie
+<p align="center">
+  <a href="flake.nix"><img src="https://img.shields.io/badge/Nix-flake-6e56cf?style=flat-square" alt="Nix flake"></a>
+  <a href="https://github.com/nix-community/home-manager"><img src="https://img.shields.io/badge/home--manager-managed-22d3ee?style=flat-square" alt="home-manager managed"></a>
+  <img src="https://img.shields.io/badge/platforms-macOS_·_WSL2-34d399?style=flat-square" alt="platforms macOS and WSL2">
+  <img src="https://img.shields.io/badge/build-none_·_home--manager_switch-64748b?style=flat-square" alt="no build step">
+</p>
 
-Personal dotfiles, managed declaratively with a [Nix flake](flake.nix) +
-[home-manager](https://github.com/nix-community/home-manager). One `home.nix`
-module, per-machine overrides in `hosts/`.
+<h1 align="center">homie</h1>
+
+<p align="center">
+  <b>One command rebuilds my whole shell environment — packages, dotfiles, shell,<br>
+  and pinned language runtimes — the same way on macOS and WSL2.</b>
+</p>
+
+<p align="center">
+  <a href="#what-this-is">What</a> ·
+  <a href="#how-it-fits-together">Architecture</a> ·
+  <a href="#fresh-machine">Fresh machine</a> ·
+  <a href="#daily-use">Daily use</a> ·
+  <a href="#layout">Layout</a> ·
+  <a href="#rules-of-the-house">Rules</a>
+</p>
+
+<p align="center">
+  <i>Personal dotfiles as a <a href="flake.nix">Nix flake</a> + <a href="https://github.com/nix-community/home-manager">home-manager</a> — one <code>home.nix</code> module, per-machine overrides in <code>hosts/</code>.</i>
+</p>
+
+---
+
+## What this is
+
+My machine setup, declarative and reproducible. Instead of a pile of shell scripts
+and hand-installed tools that drift apart across machines, everything — CLI packages,
+dotfile symlinks, shell config, pinned runtimes — is one Nix expression. A single
+`home-manager switch` materializes it, and it lands the same on my Mac and my WSL2 box.
+There is no application code and no test suite here; the "build" is the home environment.
 
 | Profile        | Machine      | System         |
 | -------------- | ------------ | -------------- |
 | `zaki`         | personal mac | aarch64-darwin |
 | `zaki@windows` | WSL2         | x86_64-linux   |
+
+## How it fits together
+
+```mermaid
+flowchart LR
+    F["flake.nix"] --> H["home.nix"]
+    HOST["hosts/*.nix (per-machine)"] --> H
+    H --> P["home.packages<br/>git · eza · ripgrep · jq · …"]
+    H --> D["home.file<br/>dotfiles symlinked → ~"]
+    H --> PR["programs.*<br/>zsh · mise · starship · atuin · direnv"]
+```
+
+`flake.nix` exposes one home configuration per profile; each pairs `home.nix` (the shared
+module) with a small `hosts/` file for the per-machine username and home directory. Language
+runtimes are the one thing Nix does **not** own — [mise](https://mise.jdx.dev) manages
+go/node/python so a project can pin its own version.
+
+> **Claude Code agent config is not here.** The `claude-code` + `rtk` binaries, skills,
+> plugins, MCP servers, and galdr live in the separate private
+> [`nyelonong/agents`](https://github.com/nyelonong/agents) repo, installed by its own
+> bootstrap. homie is dotfiles / packages / home-manager only.
 
 ## Fresh machine
 
@@ -17,42 +69,35 @@ One command — no git, nix, or SSH key needed beforehand:
 curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | sh
 ```
 
-It installs Nix (Determinate), clones this repo to `~/homie` over HTTPS
-(read-only, no auth needed — it's public), generates an SSH key for pushing
-back later, then applies the right profile and installs the pinned language
-runtimes. That's it — homie is dotfiles / packages / home-manager only.
+It installs Nix (Determinate), clones this repo to `~/homie` over HTTPS (read-only, no auth —
+it's public), generates an SSH key for pushing back later, applies the right profile, and
+installs the pinned language runtimes. Re-runnable — steps skip or harmlessly re-apply.
 
-Claude Code agent config (the `claude-code` + `rtk` binaries, skills, plugins,
-MCP, galdr) lives in the separate private
-[`nyelonong/agents`](https://github.com/nyelonong/agents) repo and is a separate
-step — see below.
-
-Everything is re-runnable — steps skip or harmlessly re-apply work already
-done. `PROFILE` overrides the OS-based default (`zaki` on macOS,
-`zaki@windows` on WSL2):
+`PROFILE` overrides the OS-based default (`zaki` on macOS, `zaki@windows` on WSL2). Set it on
+`sh` — the right side of the pipe, not `curl`:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | PROFILE=zaki sh
 ```
 
-Afterwards, things nix does not do for you:
+Then, the things nix does not do for you:
 
-1. restart your shell
-2. Claude Code agent config (separate private repo):
+1. Restart your shell.
+2. Install Claude Code agent config (separate private repo — needs the generated SSH key
+   registered on GitHub first):
    ```sh
    git clone git@github.com:nyelonong/agents.git ~/Projects/personal/agents
    ~/Projects/personal/agents/bootstrap.sh
    ```
-   (needs the generated SSH key registered on GitHub first)
-3. `claude login`
+3. `claude login`.
 
 ## Daily use
 
 ```sh
-make switch              # apply config after editing (PROFILE=zaki default)
-make update              # bump flake inputs, then apply
-make fmt                 # format nix files
-make help                # list all targets
+make switch    # apply config after editing (PROFILE=zaki default)
+make update    # bump flake inputs, then apply
+make fmt       # format nix files
+make help      # list all targets
 ```
 
 ## Layout
@@ -68,12 +113,11 @@ bootstrap.sh         fresh-machine setup (nix + home-manager only)
 
 ## Rules of the house
 
-- **Edit files in this repo, not in `~`.** Home versions are read-only
-  symlinks into `/nix/store`, overwritten on every `make switch`.
-- **New CLI tools go in `home.packages`** (`home.nix`), not brew. Language
-  runtimes are the exception: [mise](https://mise.jdx.dev) owns them, pinned
-  under `programs.mise.globalConfig.tools` in `home.nix`. To bump one, edit
-  that, then `make switch && mise install`. Per-project overrides still work
-  the usual way — drop a `mise.toml` or `.tool-versions` in the project.
-- `~/.claude` is not tracked here except `statusline-command.sh`; Claude Code
-  manages the rest per-machine.
+- **Edit files in this repo, not in `~`.** Home versions are read-only symlinks into
+  `/nix/store`, overwritten on every `make switch`.
+- **New CLI tools go in `home.packages`** (`home.nix`), not brew. Language runtimes are the
+  exception — [mise](https://mise.jdx.dev) owns them, pinned under
+  `programs.mise.globalConfig.tools`. To bump one: edit that, then `make switch && mise install`.
+  Per-project overrides still work — drop a `mise.toml` or `.tool-versions` in the project.
+- **`~/.claude` is not tracked here** except `statusline-command.sh`; Claude Code manages the
+  rest per-machine, and the agent baseline lives in [`nyelonong/agents`](https://github.com/nyelonong/agents).
