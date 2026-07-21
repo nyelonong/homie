@@ -4,7 +4,6 @@
 [url "git@github.com:"]
 	insteadOf = https://github.com/
 [core]
-	editor = zed --wait
 	pager = delta
 [interactive]
 	diffFilter = delta --color-only
