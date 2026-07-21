@@ -52,7 +52,7 @@ The config flows through three layers:
 
 Only `.claude/statusline-command.sh` is managed here (symlinked via `home.file`, edit the repo copy). The rest of `~/.claude/` — settings, instructions, rules, commands, plugins, skills, MCP servers — is set up per-machine by Claude Code itself and is intentionally not tracked. (An earlier revision synced CLAUDE.md/RTK.md/rules/commands/settings.json plus a `scripts/bootstrap-claude.sh` plugin installer — see git history if that's ever wanted again.)
 
-**Claude Code agent config is NOT here — it lives in the separate private [`nyelonong/agents`](https://github.com/nyelonong/agents) repo.** homie is dotfiles / packages / home-manager only; its `bootstrap.sh` installs nix + home-manager and nothing Claude-specific. Everything under `~/.claude` (the `claude-code` + `rtk` binaries, skill packs, plugins, MCP servers, galdr, the bespoke skills, and the global golang rule) is installed by `nyelonong/agents/bootstrap.sh`, run separately after homie. That split happened 2026-07-21 — the agent baseline used to be a block in this bootstrap. The one Claude-adjacent thing homie still owns is `.claude/statusline-command.sh`, because it's a home-manager-managed dotfile (see below).
+**Claude Code agent config is NOT here — it's managed separately in a private repo.** homie is dotfiles / packages / home-manager only; its `bootstrap.sh` installs nix + home-manager and nothing Claude-specific. Everything under `~/.claude` (the `claude-code` + `rtk` binaries, skill packs, plugins, MCP servers, methodology packs, the bespoke skills, and the global golang rule) is installed by that separate repo's own bootstrap, run after homie. That split happened 2026-07-21 — the agent baseline used to be a block in this bootstrap. The one Claude-adjacent thing homie still owns is `.claude/statusline-command.sh`, because it's a home-manager-managed dotfile (see below).
 
 ## Adding a new machine
 
@@ -61,8 +61,8 @@ One command on a fresh macOS or WSL2 machine. The repo is public, so
 Nix (Determinate), clones this repo to `~/homie` over HTTPS (read-only, no
 auth needed), generates an SSH key for pushing back later, then applies the
 right profile and installs the pinned language runtimes. Claude Code agent
-config is a separate step — clone `nyelonong/agents` and run its `bootstrap.sh`
-afterward (the homie bootstrap prints this reminder at the end):
+config is a separate step, set up outside this repo (the homie bootstrap prints
+a reminder at the end):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | sh

@@ -56,10 +56,9 @@ module) with a small `hosts/` file for the per-machine username and home directo
 runtimes are the one thing Nix does **not** own — [mise](https://mise.jdx.dev) manages
 go/node/python so a project can pin its own version.
 
-> **Claude Code agent config is not here.** The `claude-code` + `rtk` binaries, skills,
-> plugins, MCP servers, and galdr live in the separate private
-> [`nyelonong/agents`](https://github.com/nyelonong/agents) repo, installed by its own
-> bootstrap. homie is dotfiles / packages / home-manager only.
+> **Claude Code agent config is not here.** The `claude-code` binaries, skills, plugins,
+> MCP servers, and methodology packs are managed separately, outside this repo. homie is
+> dotfiles / packages / home-manager only.
 
 ## Fresh machine
 
@@ -83,13 +82,7 @@ curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh |
 Then, the things nix does not do for you:
 
 1. Restart your shell.
-2. Install Claude Code agent config (separate private repo — needs the generated SSH key
-   registered on GitHub first):
-   ```sh
-   git clone git@github.com:nyelonong/agents.git ~/Projects/personal/agents
-   ~/Projects/personal/agents/bootstrap.sh
-   ```
-3. `claude login`.
+2. `claude login` — Claude Code and its agent config are set up separately, outside this repo.
 
 ## Daily use
 
@@ -120,4 +113,4 @@ bootstrap.sh         fresh-machine setup (nix + home-manager only)
   `programs.mise.globalConfig.tools`. To bump one: edit that, then `make switch && mise install`.
   Per-project overrides still work — drop a `mise.toml` or `.tool-versions` in the project.
 - **`~/.claude` is not tracked here** except `statusline-command.sh`; Claude Code manages the
-  rest per-machine, and the agent baseline lives in [`nyelonong/agents`](https://github.com/nyelonong/agents).
+  rest per-machine, and the agent baseline is set up separately, outside this repo.

@@ -52,7 +52,7 @@ The config flows through three layers:
 
 Only `.claude/statusline-command.sh` is managed here (symlinked via `home.file`, edit the repo copy). The rest of `~/.claude/` — settings, instructions, rules, commands, plugins, skills, MCP servers — is set up per-machine by Claude Code itself and is intentionally not tracked.
 
-**Claude Code agent config lives in the separate private `nyelonong/agents` repo, not homie.** The `claude-code` + `rtk` binaries, skill packs, plugins, MCP servers, galdr, bespoke skills, and the global golang rule are all installed by `nyelonong/agents/bootstrap.sh`, run after homie. homie's bootstrap is nix + home-manager only (split out 2026-07-21).
+**Claude Code agent config is managed separately in a private repo, not homie.** The `claude-code` + `rtk` binaries, skill packs, plugins, MCP servers, methodology packs, bespoke skills, and the global golang rule are all installed by that repo's own bootstrap, run after homie. homie's bootstrap is nix + home-manager only (split out 2026-07-21).
 
 ## Adding a new machine
 
@@ -68,6 +68,6 @@ Re-runnable — steps skip or harmlessly re-apply work already done. `PROFILE` o
 curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | PROFILE=zaki sh
 ```
 
-Afterwards: restart the shell, then install Claude Code agent config — `git clone git@github.com:nyelonong/agents.git ~/Projects/personal/agents && ~/Projects/personal/agents/bootstrap.sh` — then `claude login`.
+Afterwards: restart the shell, set up Claude Code agent config (managed separately, outside this repo), then `claude login`.
 
 See `README.md` for the human-facing quickstart and `docs/superpowers/specs/2026-07-13-bootstrap-design.md` for design rationale (predates the public-repo simplification).

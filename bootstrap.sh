@@ -4,10 +4,9 @@
 # Re-runnable: every step skips work already done. PROFILE=... overrides the
 # OS-based default (zaki on macOS, zaki@windows on WSL2).
 #
-# Claude Code agent config (skills, plugins, MCP, galdr, the claude-code + rtk
-# binaries) is NOT installed here — it lives in the separate nyelonong/agents
-# repo. Run that after this: git clone git@github.com:nyelonong/agents.git and
-# ./bootstrap.sh (see the note at the end).
+# Claude Code agent config (skills, plugins, MCP, methodology packs, the
+# claude-code + rtk binaries) is NOT installed here — it's managed separately in
+# a private repo, bootstrapped on its own after this one.
 set -eu
 
 REPO_HTTPS="https://github.com/nyelonong/homie.git"
@@ -46,12 +45,12 @@ else
 fi
 
 # not needed for the clone above (public repo, read-only over HTTPS) — this
-# is just for pushing back later, and for the private agents/galdr repos. Skipped
-# silently if a key already exists.
+# is just for pushing back later, and for the private repos cloned separately.
+# Skipped silently if a key already exists.
 if [ -f "$KEY" ]; then
   say "ssh key exists: $KEY"
 else
-  say "generating ssh key (needed later if you want to push, and for nyelonong/agents)"
+  say "generating ssh key (needed later if you want to push private repos)"
   ssh-keygen -t ed25519 -C "$(id -un)@$(hostname)" -f "$KEY"
   say "add this public key to GitHub when convenient: https://github.com/settings/ssh/new"
   cat "$KEY.pub"
@@ -74,6 +73,4 @@ say "installing pinned language runtimes"
 nix run nixpkgs#mise -- install --yes
 
 say "done — restart your shell"
-say "next (Claude Code agent config): clone nyelonong/agents and run its bootstrap"
-say "  git clone git@github.com:nyelonong/agents.git ~/Projects/personal/agents"
-say "  ~/Projects/personal/agents/bootstrap.sh"
+say "next: set up Claude Code agent config (managed separately)"
