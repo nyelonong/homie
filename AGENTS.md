@@ -32,8 +32,8 @@ The config flows through three layers:
 1. **`flake.nix`** — declares inputs (`nixpkgs-unstable`, `home-manager` following nixpkgs) and exposes one `homeConfiguration` per profile (`zaki`, `zaki@windows`), each combining `./home.nix` with a per-machine module from `./hosts/` (username/homeDirectory).
 
 2. **`home.nix`** — the single home-manager module and the heart of the repo. It does two distinct jobs:
-   - **`home.packages`**: the declarative package list (git/gh/delta, nixfmt/nil, pnpm, eza, bat, fd, ripgrep, jq, tealdeer, nerdfonts). Add CLI tools here, not via brew — except language runtimes, which mise owns (see below). `jq` is load-bearing: `.claude/statusline-command.sh` shells out to it.
-   - **`home.file.*`**: symlinks repo files into `$HOME` (`./config` → `~/.config`, plus `.zshrc`, `.gitconfig`, `.claude/statusline-command.sh`). **Edits to dotfiles must be made in the repo copy** — the home directory versions are read-only symlinks into `/nix/store` and are overwritten on every `switch`.
+   - **`home.packages`**: the declarative package list (git/gh/delta, nixfmt/nil, pnpm, eza, bat, fd, ripgrep, jq, tealdeer, nerdfonts). Add CLI tools here, not via brew — except language runtimes, which mise owns (see below).
+   - **`home.file.*`**: symlinks repo files into `$HOME` (`./config` → `~/.config`, plus `.zshrc`, `.gitconfig`). **Edits to dotfiles must be made in the repo copy** — the home directory versions are read-only symlinks into `/nix/store` and are overwritten on every `switch`.
    - Also enables `programs.{home-manager,direnv,mise,zsh,zoxide,fzf,atuin,starship}`. Shell aliases, session vars, and the Ctrl-R keybind live in `programs.zsh` here, not in a sourced file.
 
 3. **Sourced shell config** (`.zshrc`, `config/starship.toml`) — the leftover runtime bits kept as plain files. `.zshrc` is now nearly empty (one PATH line); everything else moved into `programs.zsh`.
@@ -46,13 +46,7 @@ The config flows through three layers:
 
 - Shell aliases in `programs.zsh.shellAliases` rewrite common commands (`cat`→`bat`, `ls`/`ll`/`tree`→`eza`), so those binaries must stay in `home.packages`.
 
-- **`sessionPath` order matters.** It carries `~/.local/share/mise/shims` because `programs.mise`'s PATH activation only runs in *interactive* zsh — non-interactive shells (Claude Code hooks, editors, launchd) need the shims to see node/go/python. Removing it breaks hooks with `node: command not found`.
-
-## Claude Code
-
-Only `.claude/statusline-command.sh` is managed here (symlinked via `home.file`, edit the repo copy). The rest of `~/.claude/` — settings, instructions, rules, commands, plugins, skills, MCP servers — is set up per-machine by Claude Code itself and is intentionally not tracked.
-
-**Claude Code agent config is managed separately in a private repo, not homie.** The `claude-code` + `rtk` binaries, skill packs, plugins, MCP servers, methodology packs, bespoke skills, and the global golang rule are all installed by that repo's own bootstrap, run after homie. homie's bootstrap is nix + home-manager only (split out 2026-07-21).
+- **`sessionPath` order matters.** It carries `~/.local/share/mise/shims` because `programs.mise`'s PATH activation only runs in *interactive* zsh — non-interactive shells (editors, hooks, launchd) need the shims to see node/go/python. Removing it breaks them with `node: command not found`.
 
 ## Adding a new machine
 
@@ -68,6 +62,6 @@ Re-runnable — steps skip or harmlessly re-apply work already done. `PROFILE` o
 curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | PROFILE=zaki sh
 ```
 
-Afterwards: restart the shell, set up Claude Code agent config (managed separately, outside this repo), then `claude login`.
+Afterwards: restart the shell.
 
 See `README.md` for the human-facing quickstart and `docs/superpowers/specs/2026-07-13-bootstrap-design.md` for design rationale (predates the public-repo simplification).

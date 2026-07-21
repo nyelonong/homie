@@ -32,8 +32,8 @@ The config flows through three layers:
 1. **`flake.nix`** — declares inputs (`nixpkgs-unstable`, `home-manager` following nixpkgs) and exposes `homeConfigurations."zaki"`, pinned to `aarch64-darwin`, with `./home.nix` as its only module.
 
 2. **`home.nix`** — the single home-manager module and the heart of the repo. It does two distinct jobs:
-   - **`home.packages`**: the declarative package list (git/gh/delta, nixfmt/nil, pnpm, eza, bat, fd, ripgrep, jq, tealdeer, nerdfonts). Add CLI tools here, not via brew — except language runtimes, which mise owns (see below). `jq` is load-bearing: `.claude/statusline-command.sh` shells out to it.
-   - **`home.file.*`**: symlinks repo files into `$HOME` (`./config` → `~/.config`, plus `.zshrc`, `.gitconfig`, `.claude/statusline-command.sh`). **Edits to dotfiles must be made in the repo copy** — the home directory versions are read-only symlinks into `/nix/store` and are overwritten on every `switch`.
+   - **`home.packages`**: the declarative package list (git/gh/delta, nixfmt/nil, pnpm, eza, bat, fd, ripgrep, jq, tealdeer, nerdfonts). Add CLI tools here, not via brew — except language runtimes, which mise owns (see below).
+   - **`home.file.*`**: symlinks repo files into `$HOME` (`./config` → `~/.config`, plus `.zshrc`, `.gitconfig`). **Edits to dotfiles must be made in the repo copy** — the home directory versions are read-only symlinks into `/nix/store` and are overwritten on every `switch`.
    - Also enables `programs.{home-manager,direnv,mise,zsh,zoxide,fzf,atuin,starship}`. Shell aliases, session vars, and the Ctrl-R keybind live in `programs.zsh` here, not in a sourced file.
 
 3. **Sourced shell config** (`.zshrc`, `config/starship.toml`) — the leftover runtime bits kept as plain files. `.zshrc` is now nearly empty (one PATH line); everything else moved into `programs.zsh`.
@@ -46,13 +46,7 @@ The config flows through three layers:
 
 - Shell aliases in `programs.zsh.shellAliases` rewrite common commands (`cat`→`bat`, `ls`/`ll`/`tree`→`eza`), so those binaries must stay in `home.packages`.
 
-- **`sessionPath` order matters.** It carries `~/.local/share/mise/shims` because `programs.mise`'s PATH activation only runs in *interactive* zsh — non-interactive shells (Claude Code hooks, editors, launchd) need the shims to see node/go/python. Removing it breaks hooks with `node: command not found`.
-
-## Claude Code
-
-Only `.claude/statusline-command.sh` is managed here (symlinked via `home.file`, edit the repo copy). The rest of `~/.claude/` — settings, instructions, rules, commands, plugins, skills, MCP servers — is set up per-machine by Claude Code itself and is intentionally not tracked. (An earlier revision synced CLAUDE.md/RTK.md/rules/commands/settings.json plus a `scripts/bootstrap-claude.sh` plugin installer — see git history if that's ever wanted again.)
-
-**Claude Code agent config is NOT here — it's managed separately in a private repo.** homie is dotfiles / packages / home-manager only; its `bootstrap.sh` installs nix + home-manager and nothing Claude-specific. Everything under `~/.claude` (the `claude-code` + `rtk` binaries, skill packs, plugins, MCP servers, methodology packs, the bespoke skills, and the global golang rule) is installed by that separate repo's own bootstrap, run after homie. That split happened 2026-07-21 — the agent baseline used to be a block in this bootstrap. The one Claude-adjacent thing homie still owns is `.claude/statusline-command.sh`, because it's a home-manager-managed dotfile (see below).
+- **`sessionPath` order matters.** It carries `~/.local/share/mise/shims` because `programs.mise`'s PATH activation only runs in *interactive* zsh — non-interactive shells (editors, hooks, launchd) need the shims to see node/go/python. Removing it breaks them with `node: command not found`.
 
 ## Adding a new machine
 
@@ -60,9 +54,7 @@ One command on a fresh macOS or WSL2 machine. The repo is public, so
 `bootstrap.sh` is fetched directly — no gist indirection needed. It installs
 Nix (Determinate), clones this repo to `~/homie` over HTTPS (read-only, no
 auth needed), generates an SSH key for pushing back later, then applies the
-right profile and installs the pinned language runtimes. Claude Code agent
-config is a separate step, set up outside this repo (the homie bootstrap prints
-a reminder at the end):
+right profile and installs the pinned language runtimes:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | sh

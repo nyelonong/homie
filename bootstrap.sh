@@ -3,10 +3,6 @@
 # Usage: curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | sh
 # Re-runnable: every step skips work already done. PROFILE=... overrides the
 # OS-based default (zaki on macOS, zaki@windows on WSL2).
-#
-# Claude Code agent config (skills, plugins, MCP, methodology packs, the
-# claude-code + rtk binaries) is NOT installed here — it's managed separately in
-# a private repo, bootstrapped on its own after this one.
 set -eu
 
 REPO_HTTPS="https://github.com/nyelonong/homie.git"
@@ -73,4 +69,3 @@ say "installing pinned language runtimes"
 nix run nixpkgs#mise -- install --yes
 
 say "done — restart your shell"
-say "next: set up Claude Code agent config (managed separately)"

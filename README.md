@@ -56,10 +56,6 @@ module) with a small `hosts/` file for the per-machine username and home directo
 runtimes are the one thing Nix does **not** own — [mise](https://mise.jdx.dev) manages
 go/node/python so a project can pin its own version.
 
-> **Claude Code agent config is not here.** The `claude-code` binaries, skills, plugins,
-> MCP servers, and methodology packs are managed separately, outside this repo. homie is
-> dotfiles / packages / home-manager only.
-
 ## Fresh machine
 
 One command — no git, nix, or SSH key needed beforehand:
@@ -79,10 +75,7 @@ installs the pinned language runtimes. Re-runnable — steps skip or harmlessly 
 curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | PROFILE=zaki sh
 ```
 
-Then, the things nix does not do for you:
-
-1. Restart your shell.
-2. `claude login` — Claude Code and its agent config are set up separately, outside this repo.
+Afterwards, restart your shell.
 
 ## Daily use
 
@@ -112,5 +105,3 @@ bootstrap.sh         fresh-machine setup (nix + home-manager only)
   exception — [mise](https://mise.jdx.dev) owns them, pinned under
   `programs.mise.globalConfig.tools`. To bump one: edit that, then `make switch && mise install`.
   Per-project overrides still work — drop a `mise.toml` or `.tool-versions` in the project.
-- **`~/.claude` is not tracked here** except `statusline-command.sh`; Claude Code manages the
-  rest per-machine, and the agent baseline is set up separately, outside this repo.

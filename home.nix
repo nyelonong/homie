@@ -19,7 +19,7 @@
       nil
       pnpm
 
-      # cli tools (jq: needed by .claude/statusline-command.sh)
+      # cli tools
       eza
       bat
       fd
@@ -44,8 +44,8 @@
     sessionPath = [
       "${config.home.homeDirectory}/Projects/go/bin"
       # mise shims: interactive zsh gets real binaries via programs.mise's PATH
-      # activation, but non-interactive shells (Claude Code hooks, editors,
-      # launchd) never source it — they need the shims to see node/go/python.
+      # activation, but non-interactive shells (editors, hooks, launchd) never
+      # source it — they need the shims to see node/go/python.
       "${config.home.homeDirectory}/.local/share/mise/shims"
       "${config.home.homeDirectory}/.local/bin"
       "${config.home.homeDirectory}/.opencode/bin"
@@ -60,12 +60,6 @@
     };
     file.".gitconfig" = {
       source = ./.gitconfig;
-    };
-
-    # Claude Code: only the statusline script is managed declaratively.
-    file.".claude/statusline-command.sh" = {
-      source = ./.claude/statusline-command.sh;
-      executable = true;
     };
   };
 
