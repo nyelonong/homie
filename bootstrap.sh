@@ -114,12 +114,16 @@ link_skill() { # <abs skill dir under $AGENTS_SKILLS>: symlink into ~/.claude/sk
 git_sync https://github.com/samber/cc-skills-golang.git "$AGENTS_SKILLS/cc-skills-golang"
 for d in "$AGENTS_SKILLS"/cc-skills-golang/skills/*/; do link_skill "${d%/}"; done
 
-# bespoke private pack (nyelonong/skills) — go-network-resiliency et al, cloned
-# over SSH. On a fresh machine this needs the generated SSH key registered on
-# GitHub first; until then it self-skips with a warning (same gate as galdr).
+# bespoke private pack (nyelonong/skills) — go-network-resiliency et al. Unlike
+# the read-only upstream packs above, this is Zaki's own repo he actively edits,
+# so it's cloned to a normal dev location (~/Projects/personal/skills) and its
+# skill dirs are symlinked straight into ~/.claude/skills. Over SSH, so a fresh
+# machine needs the generated SSH key registered first — else self-skip (like galdr).
+SKILLS_REPO="$HOME/Projects/personal/skills"
 if nix run nixpkgs#git -- ls-remote git@github.com:nyelonong/skills.git >/dev/null 2>&1; then
-  git_sync git@github.com:nyelonong/skills.git "$AGENTS_SKILLS/nyelonong-skills"
-  for d in "$AGENTS_SKILLS"/nyelonong-skills/*/; do link_skill "${d%/}"; done
+  mkdir -p "$(dirname "$SKILLS_REPO")"
+  git_sync git@github.com:nyelonong/skills.git "$SKILLS_REPO"
+  for d in "$SKILLS_REPO"/*/; do ln -sfn "${d%/}" "$CLAUDE_SKILLS/$(basename "$d")"; done
 else
   say "private skills (nyelonong/skills) skipped — register the SSH key on GitHub, re-run bootstrap"
 fi
@@ -178,7 +182,7 @@ fi
 # Source lives in the private pack cloned above, so this only runs once that
 # clone succeeded (i.e. the SSH key is registered).
 CLAUDE_MD="$HOME/.claude/CLAUDE.md"
-GLOBAL_RULE="$AGENTS_SKILLS/nyelonong-skills/CLAUDE.global.md"
+GLOBAL_RULE="$SKILLS_REPO/CLAUDE.global.md"
 if [ -f "$GLOBAL_RULE" ] && ! { [ -f "$CLAUDE_MD" ] && grep -q "homie:baseline-golang" "$CLAUDE_MD"; }; then
   say "adding global golang skill-trigger rule (~/.claude/CLAUDE.md)"
   { printf '\n'; cat "$GLOBAL_RULE"; } >>"$CLAUDE_MD"
