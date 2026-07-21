@@ -46,15 +46,13 @@ The config flows through three layers:
 
 - Shell aliases in `programs.zsh.shellAliases` rewrite common commands (`cat`→`bat`, `ls`/`ll`/`tree`→`eza`), so those binaries must stay in `home.packages`.
 
-- **Zed is intentionally not in `home.packages`.** `.gitconfig` sets `core.editor = zed --wait`, but the `zed` CLI comes from the Zed app itself (Zed → Install CLI → `/usr/local/bin/zed`). nixpkgs' `zed-editor` trails upstream (1.8.2 vs 1.10.3 as of 2026-07-14) and would shadow the self-updating app, so the app stays app-managed and the requirement is documented in the README's new-machine steps instead.
-
 - **`sessionPath` order matters.** It carries `~/.local/share/mise/shims` because `programs.mise`'s PATH activation only runs in *interactive* zsh — non-interactive shells (Claude Code hooks, editors, launchd) need the shims to see node/go/python. Removing it breaks hooks with `node: command not found`.
 
 ## Claude Code
 
 Only `.claude/statusline-command.sh` is managed here (symlinked via `home.file`, edit the repo copy). The rest of `~/.claude/` — settings, instructions, rules, commands, plugins, skills, MCP servers — is set up per-machine by Claude Code itself and is intentionally not tracked. (An earlier revision synced CLAUDE.md/RTK.md/rules/commands/settings.json plus a `scripts/bootstrap-claude.sh` plugin installer — see git history if that's ever wanted again.)
 
-**One exception: a curated skill/plugin baseline.** `bootstrap.sh` installs a fixed set of Claude Code skills, plugins, and MCP servers on every machine, via three mechanisms — git-cloned skill packs symlinked into `~/.claude/skills`, `claude plugin install`, and `claude mcp add`. Current set: the samber golang pack, a TypeScript pack, the bespoke **private skill pack** (`nyelonong/skills` — currently `go-network-resiliency` plus `CLAUDE.global.md`, the global "always use the `golang-*` skills" rule appended once to `~/.claude/CLAUDE.md`), **galdr** (the bespoke methodology pack, installed as a plugin straight from its private GitHub repo `nyelonong/galdr` with its SessionStart hook enabled — it replaced superpowers and the Matt Pocock pack on 2026-07-19), design + frontend-design, gopls + typescript LSPs, Warp, Playwright, and the Context7 MCP. Everything is pulled from upstream — homie itself no longer owns any skill files. The two private repos (`nyelonong/skills`, `nyelonong/galdr`) are cloned over SSH, so on a new machine they need the generated SSH key registered on GitHub first, or those steps self-skip with a warning. Edit the baseline in `bootstrap.sh`; add or change bespoke skills in the `nyelonong/skills` repo.
+**Claude Code agent config is NOT here — it lives in the separate private [`nyelonong/agents`](https://github.com/nyelonong/agents) repo.** homie is dotfiles / packages / home-manager only; its `bootstrap.sh` installs nix + home-manager and nothing Claude-specific. Everything under `~/.claude` (the `claude-code` + `rtk` binaries, skill packs, plugins, MCP servers, galdr, the bespoke skills, and the global golang rule) is installed by `nyelonong/agents/bootstrap.sh`, run separately after homie. That split happened 2026-07-21 — the agent baseline used to be a block in this bootstrap. The one Claude-adjacent thing homie still owns is `.claude/statusline-command.sh`, because it's a home-manager-managed dotfile (see below).
 
 ## Adding a new machine
 
@@ -62,8 +60,9 @@ One command on a fresh macOS or WSL2 machine. The repo is public, so
 `bootstrap.sh` is fetched directly — no gist indirection needed. It installs
 Nix (Determinate), clones this repo to `~/homie` over HTTPS (read-only, no
 auth needed), generates an SSH key for pushing back later, then applies the
-right profile, installs claude-code + rtk, and applies the curated
-skill/plugin/MCP baseline described above:
+right profile and installs the pinned language runtimes. Claude Code agent
+config is a separate step — clone `nyelonong/agents` and run its `bootstrap.sh`
+afterward (the homie bootstrap prints this reminder at the end):
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | sh

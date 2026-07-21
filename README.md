@@ -19,9 +19,13 @@ curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh |
 
 It installs Nix (Determinate), clones this repo to `~/homie` over HTTPS
 (read-only, no auth needed — it's public), generates an SSH key for pushing
-back later, then applies the right profile, installs claude-code and rtk, and
-sets up a curated baseline of Claude Code skills, plugins, and MCP servers
-(golang + TypeScript packs, galdr — the bespoke methodology pack, design, LSPs, Context7, …).
+back later, then applies the right profile and installs the pinned language
+runtimes. That's it — homie is dotfiles / packages / home-manager only.
+
+Claude Code agent config (the `claude-code` + `rtk` binaries, skills, plugins,
+MCP, galdr) lives in the separate private
+[`nyelonong/agents`](https://github.com/nyelonong/agents) repo and is a separate
+step — see below.
 
 Everything is re-runnable — steps skip or harmlessly re-apply work already
 done. `PROFILE` overrides the OS-based default (`zaki` on macOS,
@@ -31,15 +35,16 @@ done. `PROFILE` overrides the OS-based default (`zaki` on macOS,
 curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | PROFILE=zaki sh
 ```
 
-Afterwards, three things nix does not do for you:
+Afterwards, things nix does not do for you:
 
 1. restart your shell
-2. `claude login`
-3. install [Zed](https://zed.dev) and run **Zed → Install CLI** — it puts `zed`
-   in `/usr/local/bin`. `.gitconfig` sets `core.editor = zed --wait`, so until
-   that exists, any git command that opens an editor (`git commit` with no
-   `-m`, interactive rebase) fails. Zed is deliberately *not* in
-   `home.packages`: nixpkgs trails its release train, and the app self-updates.
+2. Claude Code agent config (separate private repo):
+   ```sh
+   git clone git@github.com:nyelonong/agents.git ~/Projects/personal/agents
+   ~/Projects/personal/agents/bootstrap.sh
+   ```
+   (needs the generated SSH key registered on GitHub first)
+3. `claude login`
 
 ## Daily use
 
@@ -58,7 +63,7 @@ home.nix             the module: packages, symlinks, shell, programs
 hosts/               per-machine username/homeDirectory overrides
 config/              → ~/.config (starship, ntfy, …)
 .zshrc, .gitconfig   → symlinked into ~
-bootstrap.sh         full fresh-machine setup
+bootstrap.sh         fresh-machine setup (nix + home-manager only)
 ```
 
 ## Rules of the house

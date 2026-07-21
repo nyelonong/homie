@@ -46,17 +46,17 @@ The config flows through three layers:
 
 - Shell aliases in `programs.zsh.shellAliases` rewrite common commands (`cat`→`bat`, `ls`/`ll`/`tree`→`eza`), so those binaries must stay in `home.packages`.
 
-- **Zed is intentionally not in `home.packages`.** `.gitconfig` sets `core.editor = zed --wait`, but the `zed` CLI comes from the Zed app itself (Zed → Install CLI → `/usr/local/bin/zed`). nixpkgs' `zed-editor` trails upstream (1.8.2 vs 1.10.3 as of 2026-07-14) and would shadow the self-updating app, so the app stays app-managed and the requirement is documented in the README's new-machine steps instead.
-
 - **`sessionPath` order matters.** It carries `~/.local/share/mise/shims` because `programs.mise`'s PATH activation only runs in *interactive* zsh — non-interactive shells (Claude Code hooks, editors, launchd) need the shims to see node/go/python. Removing it breaks hooks with `node: command not found`.
 
 ## Claude Code
 
-Only `.claude/statusline-command.sh` is managed here (symlinked via `home.file`, edit the repo copy). The rest of `~/.claude/` — settings, instructions, rules, commands, plugins, skills, MCP servers — is set up per-machine by Claude Code itself and is intentionally not tracked. (An earlier revision synced CLAUDE.md/RTK.md/rules/commands/settings.json plus a `scripts/bootstrap-claude.sh` plugin installer — see git history if that's ever wanted again.)
+Only `.claude/statusline-command.sh` is managed here (symlinked via `home.file`, edit the repo copy). The rest of `~/.claude/` — settings, instructions, rules, commands, plugins, skills, MCP servers — is set up per-machine by Claude Code itself and is intentionally not tracked.
+
+**Claude Code agent config lives in the separate private `nyelonong/agents` repo, not homie.** The `claude-code` + `rtk` binaries, skill packs, plugins, MCP servers, galdr, bespoke skills, and the global golang rule are all installed by `nyelonong/agents/bootstrap.sh`, run after homie. homie's bootstrap is nix + home-manager only (split out 2026-07-21).
 
 ## Adding a new machine
 
-The repo is public, so `bootstrap.sh` is fetched directly — no gist indirection needed. It installs Nix (Determinate), clones this repo to `~/homie` over HTTPS (read-only, no auth needed), generates an SSH key for pushing back later, then applies the right profile and installs claude-code/rtk/caveman via their official installers:
+The repo is public, so `bootstrap.sh` is fetched directly — no gist indirection needed. It installs Nix (Determinate), clones this repo to `~/homie` over HTTPS (read-only, no auth needed), generates an SSH key for pushing back later, then applies the right profile and installs the pinned language runtimes:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | sh
@@ -68,6 +68,6 @@ Re-runnable — steps skip or harmlessly re-apply work already done. `PROFILE` o
 curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | PROFILE=zaki sh
 ```
 
-Afterwards: restart the shell, then `claude login`.
+Afterwards: restart the shell, then install Claude Code agent config — `git clone git@github.com:nyelonong/agents.git ~/Projects/personal/agents && ~/Projects/personal/agents/bootstrap.sh` — then `claude login`.
 
 See `README.md` for the human-facing quickstart and `docs/superpowers/specs/2026-07-13-bootstrap-design.md` for design rationale (predates the public-repo simplification).
