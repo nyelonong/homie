@@ -114,9 +114,15 @@ link_skill() { # <abs skill dir under $AGENTS_SKILLS>: symlink into ~/.claude/sk
 git_sync https://github.com/samber/cc-skills-golang.git "$AGENTS_SKILLS/cc-skills-golang"
 for d in "$AGENTS_SKILLS"/cc-skills-golang/skills/*/; do link_skill "${d%/}"; done
 
-# bespoke go-network-resiliency — source of truth lives in this repo
-ln -sfn "$REPO_DIR/skills/go-network-resiliency" "$AGENTS_SKILLS/go-network-resiliency"
-link_skill "$AGENTS_SKILLS/go-network-resiliency"
+# bespoke private pack (nyelonong/skills) — go-network-resiliency et al, cloned
+# over SSH. On a fresh machine this needs the generated SSH key registered on
+# GitHub first; until then it self-skips with a warning (same gate as galdr).
+if nix run nixpkgs#git -- ls-remote git@github.com:nyelonong/skills.git >/dev/null 2>&1; then
+  git_sync git@github.com:nyelonong/skills.git "$AGENTS_SKILLS/nyelonong-skills"
+  for d in "$AGENTS_SKILLS"/nyelonong-skills/*/; do link_skill "${d%/}"; done
+else
+  say "private skills (nyelonong/skills) skipped — register the SSH key on GitHub, re-run bootstrap"
+fi
 
 # TypeScript (dedicated single-skill pack)
 git_sync https://github.com/SpillwaveSolutions/mastering-typescript-skill.git "$AGENTS_SKILLS/mastering-typescript-skill"
@@ -168,11 +174,14 @@ else
   say "  sign in with 'claude auth login', then re-run this bootstrap to finish them"
 fi
 
-# Global rule: force-trigger the golang skills on any Go work, in any project
+# Global rule: force-trigger the golang skills on any Go work, in any project.
+# Source lives in the private pack cloned above, so this only runs once that
+# clone succeeded (i.e. the SSH key is registered).
 CLAUDE_MD="$HOME/.claude/CLAUDE.md"
-if ! { [ -f "$CLAUDE_MD" ] && grep -q "homie:baseline-golang" "$CLAUDE_MD"; }; then
+GLOBAL_RULE="$AGENTS_SKILLS/nyelonong-skills/CLAUDE.global.md"
+if [ -f "$GLOBAL_RULE" ] && ! { [ -f "$CLAUDE_MD" ] && grep -q "homie:baseline-golang" "$CLAUDE_MD"; }; then
   say "adding global golang skill-trigger rule (~/.claude/CLAUDE.md)"
-  { printf '\n'; cat "$REPO_DIR/skills/CLAUDE.global.md"; } >>"$CLAUDE_MD"
+  { printf '\n'; cat "$GLOBAL_RULE"; } >>"$CLAUDE_MD"
 fi
 
 say "done — restart your shell"
