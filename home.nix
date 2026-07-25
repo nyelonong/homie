@@ -26,7 +26,6 @@
       ripgrep
       jq
       tealdeer
-      ntfy-sh
 
       # fonts
       pkgs.nerd-fonts.fira-code
@@ -60,28 +59,6 @@
     };
     file.".gitconfig" = {
       source = ./.gitconfig;
-    };
-  };
-
-  # ntfy subscriber: fires a macOS notification per message. Token lives in
-  # ~/.config/ntfy/token.env (untracked, not this repo) as NTFY_TOKEN=tk_...
-  # Flip enable to true and set the real topic once that file exists, then
-  # `home-manager switch`.
-  launchd.agents.ntfy-subscribe = {
-    enable = true;
-    config = {
-      ProgramArguments = [
-        "/bin/zsh"
-        "${config.home.homeDirectory}/.config/ntfy/subscribe-notify.sh"
-        "zaki-alarm"
-      ];
-      RunAtLoad = true;
-      KeepAlive = true;
-      EnvironmentVariables = {
-        PATH = "${pkgs.ntfy-sh}/bin:/usr/bin:/bin";
-      };
-      StandardOutPath = "${config.home.homeDirectory}/Library/Logs/ntfy-subscribe.log";
-      StandardErrorPath = "${config.home.homeDirectory}/Library/Logs/ntfy-subscribe.log";
     };
   };
 
