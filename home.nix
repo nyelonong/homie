@@ -123,8 +123,8 @@
         }
         function pi-opencode() {
           local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
-          command "$cli" set-status pi "opencode-go · kimi-k3" --icon sparkle --priority 90 >/dev/null 2>&1 || true
-          command pi --provider opencode-go --model kimi-k3 "$@"
+          command "$cli" set-status pi "opencode-go · mimo-v2.5" --icon sparkle --priority 90 >/dev/null 2>&1 || true
+          command pi --provider opencode-go --model mimo-v2.5 "$@"
           local rc=$?
           command "$cli" clear-status pi >/dev/null 2>&1 || true
           return $rc
