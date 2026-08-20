@@ -102,6 +102,43 @@
         dif = "git diff";
       };
 
+      # pi-* wrappers stamp the provider/model pill on the cmux workspace tab;
+      # outside cmux the cmux calls fail silently and pi just runs normally.
+      initExtra = ''
+        function pi-cekat() {
+          local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
+          command "$cli" set-status pi "litellm · azure_ai/gpt-5.6-terra" --icon sparkle --priority 90 >/dev/null 2>&1 || true
+          command pi --provider litellm --model azure_ai/gpt-5.6-terra "$@"
+          local rc=$?
+          command "$cli" clear-status pi >/dev/null 2>&1 || true
+          return $rc
+        }
+        function pi-codex() {
+          local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
+          command "$cli" set-status pi "openai-codex · gpt-5.6-sol" --icon sparkle --priority 90 >/dev/null 2>&1 || true
+          command pi --provider openai-codex --model gpt-5.6-sol "$@"
+          local rc=$?
+          command "$cli" clear-status pi >/dev/null 2>&1 || true
+          return $rc
+        }
+        function pi-opencode() {
+          local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
+          command "$cli" set-status pi "opencode-go · kimi-k3" --icon sparkle --priority 90 >/dev/null 2>&1 || true
+          command pi --provider opencode-go --model kimi-k3 "$@"
+          local rc=$?
+          command "$cli" clear-status pi >/dev/null 2>&1 || true
+          return $rc
+        }
+        function pi-openrouter() {
+          local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
+          command "$cli" set-status pi "openrouter · z-ai/glm-5.2" --icon sparkle --priority 90 >/dev/null 2>&1 || true
+          command pi --provider openrouter --model z-ai/glm-5.2 "$@"
+          local rc=$?
+          command "$cli" clear-status pi >/dev/null 2>&1 || true
+          return $rc
+        }
+      '';
+
     };
 
     # replaces autojump (unmaintained): `z <dir>` jumps, `zi` picks via fzf
