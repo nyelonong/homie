@@ -4,7 +4,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## What this is
 
-Personal dotfiles managed declaratively via a **Nix flake + home-manager** for user `zaki`, across two profiles: `zaki` (personal mac, aarch64-darwin), `zaki@windows` (WSL2, x86_64-linux). There is no application code, build, or test suite — the "build" is materializing the home environment.
+Personal dotfiles managed declaratively via a **Nix flake + home-manager** for user `zaki`, across three profiles: `zaki` (personal mac, aarch64-darwin), `zaki@cekat` (work mac, aarch64-darwin), `zaki@windows` (WSL2, x86_64-linux). There is no application code, build, or test suite — the "build" is materializing the home environment.
 
 ## Commands
 
@@ -29,7 +29,7 @@ There is no lint or test step. Validation = `home-manager switch` succeeds and t
 
 The config flows through three layers:
 
-1. **`flake.nix`** — declares inputs (`nixpkgs-unstable`, `home-manager` following nixpkgs) and exposes one `homeConfiguration` per profile (`zaki`, `zaki@windows`), each combining `./home.nix` with a per-machine module from `./hosts/` (username/homeDirectory).
+1. **`flake.nix`** — declares inputs (`nixpkgs-unstable`, `home-manager` following nixpkgs) and exposes one `homeConfiguration` per profile (`zaki`, `zaki@cekat`, `zaki@windows`), each combining `./home.nix` with a per-machine module from `./hosts/` (username/homeDirectory).
 
 2. **`home.nix`** — the single home-manager module and the heart of the repo. It does two distinct jobs:
    - **`home.packages`**: the declarative package list (git/gh/delta, nixfmt/nil, pnpm, eza, bat, fd, ripgrep, jq, tealdeer, nerdfonts). Add CLI tools here, not via brew — except language runtimes, which mise owns (see below).

@@ -31,6 +31,7 @@
     {
       homeConfigurations = {
         "zaki" = mkHome "aarch64-darwin" [ ./hosts/personal.nix ]; # personal mac
+        "zaki@cekat" = mkHome "aarch64-darwin" [ ./hosts/cekat.nix ]; # work mac
         "zaki@windows" = mkHome "x86_64-linux" [ ./hosts/windows.nix ]; # WSL2 on Windows
       };
     };

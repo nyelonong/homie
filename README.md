@@ -38,6 +38,7 @@ There is no application code and no test suite here; the "build" is the home env
 | Profile        | Machine      | System         |
 | -------------- | ------------ | -------------- |
 | `zaki`         | personal mac | aarch64-darwin |
+| `zaki@cekat`   | work mac     | aarch64-darwin |
 | `zaki@windows` | WSL2         | x86_64-linux   |
 
 ## How it fits together
