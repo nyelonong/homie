@@ -1,0 +1,38 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v20
+      - run: nix fmt -- --check *.nix hosts/*.nix
+      - run: sh -n bootstrap.sh
+
+  profiles:
+    name: ${{ matrix.profile }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - profile: zaki
+            runner: macos-14
+          - profile: zaki@cekat
+            runner: macos-14
+          - profile: zaki@windows
+            runner: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: DeterminateSystems/nix-installer-action@v20
+      - env:
+          PROFILE: ${{ matrix.profile }}
+        run: nix build --no-link ".#homeConfigurations.\"$PROFILE\".activationPackage"

@@ -29,6 +29,11 @@
         };
     in
     {
+      formatter = {
+        aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt;
+        x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt;
+      };
+
       homeConfigurations = {
         "zaki" = mkHome "aarch64-darwin" [ ./hosts/personal.nix ]; # personal mac
         "zaki@cekat" = mkHome "aarch64-darwin" [ ./hosts/cekat.nix ]; # work mac
