@@ -74,22 +74,6 @@
   # not packaged in nixpkgs), so its agent pins the Brew path — a `brew upgrade
   # borders` swaps the binary under the running agent; KeepAlive absorbs that.
   launchd.agents = lib.mkIf pkgs.stdenv.isDarwin {
-    borders = {
-      enable = true;
-      config = {
-        ProgramArguments = [
-          "/opt/homebrew/bin/borders"
-          "style=round"
-          "width=6.0"
-          "active_color=0xffe2e2e3"
-          "inactive_color=0xff414550"
-          "ax_focus=on"
-        ];
-        KeepAlive = true;
-        RunAtLoad = true;
-      };
-    };
-
     skhd = {
       enable = true;
       config = {
