@@ -93,7 +93,7 @@ make help      # list all targets
 flake.nix            inputs + one homeConfiguration per profile
 home.nix             the module: packages, symlinks, shell, programs
 hosts/               per-machine username/homeDirectory overrides
-config/              → ~/.config (starship, ntfy, …)
+config/              → ~/.config (starship, …)
 .zshrc, .gitconfig   → symlinked into ~
 bootstrap.sh         fresh-machine setup (nix + home-manager only)
 ```
@@ -101,7 +101,8 @@ bootstrap.sh         fresh-machine setup (nix + home-manager only)
 ## Rules of the house
 
 - **Edit files in this repo, not in `~`.** Home versions are read-only symlinks into
-  `/nix/store`, overwritten on every `make switch`.
+  `/nix/store`, overwritten on every `make switch`. For machine-specific Zsh additions,
+  use `~/.zshrc.local`; it is sourced after the managed configuration and is ignored by Git.
 - **New CLI tools go in `home.packages`** (`home.nix`), not brew. Language runtimes are the
   exception — [mise](https://mise.jdx.dev) owns them, pinned under
   `programs.mise.globalConfig.tools`. To bump one: edit that, then `make switch && mise install`.

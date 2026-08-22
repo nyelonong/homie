@@ -1,7 +1,5 @@
 monitorBarOverrides = []
 monitorDwindleOverrides = []
-monitorGapOverrides = []
-monitorNiriOverrides = []
 monitorOrientationOverrides = []
 monitorRoutingOverrides = []
 
@@ -9,14 +7,14 @@ monitorRoutingOverrides = []
 mode = "dark"
 
 [borders]
-enabled = false
-width = 5.0
+enabled = true
+width = 3.0
 
 [borders.color]
 alpha = 1.0
-blue = 0.979300037944676
-green = 1.0
-red = 0.08458520228437894
+blue = 0.9148781895637512
+green = 0.9175233840942383
+red = 0.9167542457580566
 
 [clipboard]
 historyEnabled = false
@@ -28,7 +26,7 @@ maxTotalBytes = 67108864
 defaultSplitRatio = 1.0
 moveToRootStable = true
 singleWindowFit = "fill"
-smartSplit = false
+smartSplit = true
 splitWidthMultiplier = 1.0
 useGlobalGaps = true
 
@@ -41,13 +39,13 @@ moveCrossesMonitorAtEdge = false
 moveMouseToFocusedWindow = false
 
 [gaps]
-size = 14.0
+size = 15.0
 
 [gaps.outer]
-bottom = 6.0
-left = 6.0
-right = 6.0
-top = 4.0
+bottom = 5.0
+left = 12.0
+right = 64.0
+top = 10.0
 
 [general]
 animationsEnabled = true
@@ -69,7 +67,7 @@ scrollModifierKey = "optionShift"
 scrollSensitivity = 5.0
 trackpadScrollStyle = "snap"
 workspaceSwipeAxis = "vertical"
-workspaceSwipeEnabled = false
+workspaceSwipeEnabled = true
 workspaceSwipeFingerCount = 3
 
 [hiddenBar]
@@ -83,13 +81,12 @@ enabled = true
 margin = 1
 
 [niri]
-alwaysCenterSingleColumn = false
+alwaysCenterSingleColumn = true
 centerFocusedColumn = "onOverflow"
 containerPrimarySpanPresets = [0.3333333333333333, 0.5, 0.7]
-defaultContainerPrimarySpan = 0.9
 infiniteLoop = false
-singleWindowFit = "fill"
-visibleContainerCount = 3
+singleWindowFit = "container_primary_span"
+visibleContainerCount = 1
 
 [overview]
 zoom = 1.0
@@ -136,9 +133,9 @@ widthPercent = 50.0
 mode = "macOS"
 
 [statusBar]
-showAppNames = false
-showWorkspaceName = false
-useWorkspaceId = false
+showAppNames = true
+showWorkspaceName = true
+useWorkspaceId = true
 
 [workspaceBar]
 backgroundOpacity = 0.1
@@ -153,7 +150,7 @@ position = "overlappingMenuBar"
 reserveLayoutSpace = false
 revealHoldMilliseconds = 200.0
 revealModifier = "off"
-showFloatingWindows = false
+showFloatingWindows = true
 showLabels = true
 systemStatsButton = false
 windowLevel = "popup"
@@ -843,6 +840,24 @@ id = "toggleOverview"
 [[hotkeys]]
 binding = "Unassigned"
 id = "toggleSystemStats"
+
+[[monitorGapOverrides]]
+id = "29E9D7C0-0DF9-461B-B44E-8E5431FFCF76"
+monitorDisplayUUID = "37D8832A-2D66-02CA-B9F7-8F30A301B230"
+monitorName = "Built-in Retina Display"
+outerGapBottom = 5.0
+outerGapLeft = 20.0
+outerGapRight = 64.0
+outerGapTop = 5.0
+
+[[monitorNiriOverrides]]
+alwaysCenterSingleColumn = true
+centerFocusedColumn = "onOverflow"
+id = "D78A50E8-6A88-40C6-9E6A-B6D2D8F44AC0"
+monitorDisplayUUID = "102BC733-3758-43B3-9BEF-A9C3AB50AA41"
+monitorName = "S24R35x"
+singleWindowFit = "container_primary_span"
+visibleContainerCount = 1
 
 [[workspaces]]
 id = "AD36F001-C57E-41A5-AC1D-DF5249D007F0"
