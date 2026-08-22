@@ -87,13 +87,21 @@ make fmt       # format nix files
 make help      # list all targets
 ```
 
+Mac desktop extras: OmniWM's settings file is owned by the app itself, so it
+gets two extra targets — `make omniwm-deploy` pushes the repo seed to the live
+file (overwrites GUI edits), `make omniwm-harvest` pulls GUI changes back into
+the repo for review before committing.
+
 ## Layout
 
 ```
 flake.nix            inputs + one homeConfiguration per profile
-home.nix             the module: packages, symlinks, shell, programs
+home.nix             the module: packages, symlinks, shell, programs,
+                     mac launchd agents (borders, skhd), activation hooks
 hosts/               per-machine username/homeDirectory overrides
-config/              → ~/.config (starship, …)
+config/              → ~/.config (starship, helix, skhd keymap)
+apps/                seeds for apps that rewrite their own settings
+                     (omniwm/) — live file stays app-owned; deploy/harvest
 .zshrc, .gitconfig   → symlinked into ~
 bootstrap.sh         fresh-machine setup (nix + home-manager only)
 ```
@@ -107,3 +115,8 @@ bootstrap.sh         fresh-machine setup (nix + home-manager only)
   exception — [mise](https://mise.jdx.dev) owns them, pinned under
   `programs.mise.globalConfig.tools`. To bump one: edit that, then `make switch && mise install`.
   Per-project overrides still work — drop a `mise.toml` or `.tool-versions` in the project.
+- **Brew owns mac GUI apps and anything unpackagable** — Karabiner-Elements, OmniWM,
+  JankyBorders. Nix manages their daemons and configs where possible; the app binaries stay casks.
+- **Apps that rewrite their own settings live in `apps/`, not `config/`.** Their live file is
+  plain and app-owned; the repo copy is a seed pushed with `make <tool>-deploy` and synced back
+  with `make <tool>-harvest` (then commit). Everything else is a read-only store symlink.
