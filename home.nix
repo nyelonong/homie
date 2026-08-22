@@ -54,9 +54,12 @@
       "${config.home.homeDirectory}/.opencode/bin"
     ];
 
+    # force: apps like OmniWM rewrite their config file on quit, breaking the
+    # symlink — every switch re-asserts the repo copy
     file.".config" = {
       source = ./config;
       recursive = true;
+      force = true;
     };
     file.".gitconfig" = {
       source = ./.gitconfig;
