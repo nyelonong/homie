@@ -860,7 +860,7 @@ binding = "Hyper+O"
 id = "toggleOverview"
 
 [[hotkeys]]
-binding = "Hyper+Semicolon"
+binding = "Unassigned"
 id = "toggleSystemStats"
 
 [[monitorGapOverrides]]
