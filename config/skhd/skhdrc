@@ -2,8 +2,14 @@
 # in-app shortcuts. Reloads automatically on every `make switch`.
 
 # launch apps — per-app choice: -a activates the running instance (Arc is
-# single-instance and errors on -n); -na lets multi-window apps spawn anew
-cmd + alt - t : open -na Ghostty
-cmd + alt - b : open -a Arc
+# single-instance and errors on -n); -na lets multi-window apps spawn anew.
+# Each chord lands you in the app's home workspace (W1 zed, W2 browser,
+# W3 ghostty, W4 chats); omniwmctl needs the absolute path under launchd.
+cmd + alt - z : open -na Zed; /opt/homebrew/bin/omniwmctl command switch-workspace 1
+cmd + alt - b : open -a Arc; /opt/homebrew/bin/omniwmctl command switch-workspace 2
+cmd + alt - t : open -na Ghostty; /opt/homebrew/bin/omniwmctl command switch-workspace 3
+cmd + alt - s : open -a Slack; /opt/homebrew/bin/omniwmctl command switch-workspace 4
+cmd + alt - m : open -a Telegram; /opt/homebrew/bin/omniwmctl command switch-workspace 4
+cmd + alt - w : open -a WhatsApp; /opt/homebrew/bin/omniwmctl command switch-workspace 4
 
 # window management bindings arrive with the WM decision (OmniWM vs AeroSpace)
