@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  lib,
   ...
 }:
 {
@@ -17,7 +18,6 @@
       # lang / versioning (runtime versions: see programs.mise below)
       nixfmt
       nil
-      pnpm
 
       # cli tools
       eza
@@ -31,6 +31,10 @@
       pkgs.nerd-fonts.fira-code
       pkgs.nerd-fonts.droid-sans-mono
       pkgs.nerd-fonts.hack
+    ]
+    # mac desktop layer (better-mac exploration) — Linux profiles must not see these
+    ++ lib.optionals pkgs.stdenv.isDarwin [
+      skhd
     ];
 
     sessionVariables = {
@@ -54,11 +58,42 @@
       source = ./config;
       recursive = true;
     };
-    file.".zshrc" = {
-      source = ./.zshrc;
-    };
     file.".gitconfig" = {
       source = ./.gitconfig;
+    };
+
+    file.".skhdrc" = {
+      source = ./config/skhd/skhdrc;
+    };
+  };
+
+  # Daemons for the mac desktop layer. Borders comes from Brew (FelixKratz tap,
+  # not packaged in nixpkgs), so its agent pins the Brew path — a `brew upgrade
+  # borders` swaps the binary under the running agent; KeepAlive absorbs that.
+  launchd.agents = lib.mkIf pkgs.stdenv.isDarwin {
+    borders = {
+      enable = true;
+      config = {
+        ProgramArguments = [
+          "/opt/homebrew/bin/borders"
+          "style=round"
+          "width=6.0"
+          "active_color=0xffe2e2e3"
+          "inactive_color=0xff414550"
+          "ax_focus=on"
+        ];
+        KeepAlive = true;
+        RunAtLoad = true;
+      };
+    };
+
+    skhd = {
+      enable = true;
+      config = {
+        ProgramArguments = [ "${pkgs.skhd}/bin/skhd" ];
+        KeepAlive = true;
+        RunAtLoad = true;
+      };
     };
   };
 
@@ -85,7 +120,10 @@
       globalConfig.tools = {
         go = "1.26.5";
         node = "26.5.0";
-        python = "3.13";
+        pnpm = "11.22.0";
+        python = "3.13.15";
+        uv = "0.11.32";
+        bun = "1.3.14";
       };
     };
 
@@ -104,7 +142,11 @@
 
       # pi-* wrappers stamp the provider/model pill on the cmux workspace tab;
       # outside cmux the cmux calls fail silently and pi just runs normally.
-      initExtra = ''
+      initContent = lib.mkAfter ''
+        if [ -r "${config.home.homeDirectory}/.zshrc.local" ]; then
+          source "${config.home.homeDirectory}/.zshrc.local"
+        fi
+
         function pi-cekat() {
           local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
           command "$cli" set-status pi "litellm · azure_ai/gpt-5.6-terra" --icon sparkle --priority 90 >/dev/null 2>&1 || true
@@ -115,8 +157,8 @@
         }
         function pi-codex() {
           local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
-          command "$cli" set-status pi "openai-codex · gpt-5.6-sol" --icon sparkle --priority 90 >/dev/null 2>&1 || true
-          command pi --provider openai-codex --model gpt-5.6-sol "$@"
+          command "$cli" set-status pi "openai-codex · gpt-5.6-terra" --icon sparkle --priority 90 >/dev/null 2>&1 || true
+          command pi --provider openai-codex --model gpt-5.6-terra "$@"
           local rc=$?
           command "$cli" clear-status pi >/dev/null 2>&1 || true
           return $rc
