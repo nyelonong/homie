@@ -54,8 +54,8 @@
       "${config.home.homeDirectory}/.opencode/bin"
     ];
 
-    # force: apps like OmniWM rewrite their config file on quit, breaking the
-    # symlink — every switch re-asserts the repo copy
+    # force: any stray real file an app drops where our config tree symlinks
+    # gets replaced by the repo copy on every switch
     file.".config" = {
       source = ./config;
       recursive = true;
@@ -102,6 +102,23 @@
 
   xdg.enable = true;
   fonts.fontconfig.enable = true;
+
+  # OmniWM owns its live settings file — it rewrites it on every quit, so a
+  # symlink from the repo just breaks. The repo copy is a seed: installed when
+  # missing (or when the live file is still one of our old symlinks), then the
+  # GUI wins until `make omniwm-harvest` pulls changes back into the repo.
+  home.activation.seedOmniWM = lib.mkIf pkgs.stdenv.isDarwin
+    (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      live="$HOME/.config/omniwm/settings.toml"
+      if [ -L "$live" ]; then
+        rm "$live"
+        mkdir -p "$(dirname "$live")"
+        cp "${./apps/omniwm/settings.toml}" "$live"
+      elif [ ! -f "$live" ]; then
+        mkdir -p "$(dirname "$live")"
+        cp "${./apps/omniwm/settings.toml}" "$live"
+      fi
+    '');
 
   # Reload skhd after every switch so .skhdrc edits land immediately;
   # harmless no-op when skhd isn't running (fresh boot: RunAtLoad starts it).
