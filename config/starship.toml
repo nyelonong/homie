@@ -27,9 +27,9 @@ truncate_to_repo = true
 format = "[$path]($style)[$read_only]($read_only_style) "
 
 [git_branch]
-symbol = ""
+symbol = " "
 truncation_length = 24
-format = "branch [$symbol$branch]($style) "
+format = "[$symbol$branch]($style) "
 truncation_symbol = "…/"
 style = "bold purple"
 
@@ -39,17 +39,17 @@ cherry_pick = 'PICKING'
 
 [git_status]
 format = '($all_status$ahead_behind)'
-conflicted  = '[conflict ](bold red)'
-ahead       = '[ahead ${count} ](cyan)'
-behind      = '[behind ${count} ](yellow)'
-diverged    = '[ahead ${ahead_count} ](cyan)[behind ${behind_count} ](yellow)'
+conflicted  = '[≠${count} ](bold red)'
+ahead       = '[⇡${count} ](cyan)'
+behind      = '[⇣${count} ](yellow)'
+diverged    = '[⇕⇡${ahead_count}⇣${behind_count} ](yellow)'
 up_to_date  = ''
-untracked   = '[untracked ](yellow)'
-stashed     = '[stashed ](blue)'
-modified    = '[modified ](yellow)'
-staged      = '[staged ${count} ](green)'
-renamed     = '[renamed ](blue)'
-deleted     = '[deleted ](red)'
+untracked   = '[?${count} ](yellow)'
+stashed     = '[⚑${count} ](blue)'
+modified    = '[!${count} ](yellow)'
+staged      = '[+${count} ](green)'
+renamed     = '[»${count} ](blue)'
+deleted     = '[✘${count} ](red)'
 disabled    = false
 
 [git_commit]
