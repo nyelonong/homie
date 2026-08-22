@@ -336,11 +336,11 @@ binding = "Hyper+Tab"
 id = "workspaceBackAndForth"
 
 [[hotkeys]]
-binding = "Hyper+BracketRight"
+binding = "Hyper+Right Bracket"
 id = "switchWorkspace.next"
 
 [[hotkeys]]
-binding = "Hyper+BracketLeft"
+binding = "Hyper+Left Bracket"
 id = "switchWorkspace.previous"
 
 [[hotkeys]]
