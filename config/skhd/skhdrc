@@ -1,5 +1,5 @@
 # better-mac hotkey layer (starter) — cmd+alt combos to avoid shadowing
-# in-app shortcuts. skhd does not hot-reload: apply changes with `skhd -r`.
+# in-app shortcuts. Reloads automatically on every `make switch`.
 
 # launch apps (no -n: activate the running instance instead of spawning a
 # new one — Arc and most mac apps are single-instance)

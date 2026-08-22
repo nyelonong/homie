@@ -100,6 +100,13 @@
   xdg.enable = true;
   fonts.fontconfig.enable = true;
 
+  # Reload skhd after every switch so .skhdrc edits land immediately;
+  # harmless no-op when skhd isn't running (fresh boot: RunAtLoad starts it).
+  home.activation.reloadSkhd = lib.mkIf pkgs.stdenv.isDarwin
+    (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      ${pkgs.skhd}/bin/skhd -r || true
+    '');
+
   programs = {
     home-manager.enable = true;
 
