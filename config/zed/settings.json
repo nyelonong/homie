@@ -1,0 +1,92 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "markdown_preview": {
+    "max_width": 1200.0,
+    "limit_content_width": true
+  },
+  "markdown_preview_font_size": 20.0,
+  "proxy": "",
+  "edit_predictions": {
+    "allow_data_collection": "no"
+  },
+  "agent_servers": {
+    "pi-acp": {
+      "default_config_options": {
+        "model": "litellm/azure_ai/gpt-5.6-terra",
+        "thought_level": "high"
+      },
+      "type": "registry"
+    }
+  },
+  "git": {
+    "blame": {
+      "show_avatar": true
+    }
+  },
+  "terminal": {
+    "font_family": "Hack Nerd Font Mono",
+    "toolbar": {
+      "breadcrumbs": true
+    },
+    "cursor_shape": "bar"
+  },
+  "tabs": {
+    "file_icons": false,
+    "git_status": true
+  },
+  "title_bar": {
+    "show_branch_status_icon": true
+  },
+  "prettier": {
+    "allowed": true
+  },
+  "code_lens": "on",
+  "inlay_hints": {
+    "enabled": true
+  },
+  "format_on_save": "on",
+  "soft_wrap": "prefer_line",
+  "markdown_preview_code_font_family": ".ZedMono",
+  "markdown_preview_font_family": "FiraCode Nerd Font",
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+    "anthropic_retention": false
+  },
+  "agent": {
+    "auto_compact": {
+      "threshold": "90%"
+    },
+    "play_sound_when_agent_done": "always",
+    "notify_when_agent_waiting": "all_screens",
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": []
+  },
+  "disable_ai": false,
+  "language_models": {
+    "ollama": {
+      "api_url": "https://ollama.com/v1"
+    }
+  },
+  "cli_default_open_behavior": "new_window",
+  "project_panel": {
+    "git_status_indicator": false,
+    "bold_folder_labels": false,
+    "dock": "left"
+  },
+  "ui_font_size": 16,
+  "buffer_font_size": 15,
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "One Dark",
+  },
+}
