@@ -43,7 +43,7 @@ size = 15.0
 
 [gaps.outer]
 bottom = 5.0
-left = 12.0
+left = 40.0
 right = 64.0
 top = 10.0
 
@@ -177,11 +177,10 @@ id = "486CEFA6-69AA-4A3C-AF27-BCD38F4F138B"
 minHeight = 375.0
 minWidth = 500.0
 
-# W1: all Zed windows
 [[appRules]]
+assignToWorkspace = "1"
 bundleId = "dev.zed.Zed"
 id = "979F05F4-FFA2-4EDD-B23F-08A9944C759F"
-assignToWorkspace = "1"
 minHeight = 240.0
 minWidth = 360.0
 
@@ -221,11 +220,10 @@ id = "AF752D95-8497-4844-BE20-4C93E73BAEF2"
 minHeight = 500.0
 minWidth = 800.0
 
-# W3: all Ghostty windows
 [[appRules]]
+assignToWorkspace = "3"
 bundleId = "com.mitchellh.ghostty"
 id = "7876C9EF-437E-4D4F-9C27-B1B02F4AABCE"
-assignToWorkspace = "3"
 minHeight = 48.0
 minWidth = 90.0
 
@@ -240,6 +238,26 @@ bundleId = "com.apple.MobileSMS"
 id = "552FB77D-BF0E-4737-90A6-B5BC6986C579"
 minHeight = 320.0
 minWidth = 660.0
+
+[[appRules]]
+assignToWorkspace = "2"
+bundleId = "company.thebrowser.Browser"
+id = "EEC55F7E-30BC-4B02-B0B4-87570C222361"
+
+[[appRules]]
+assignToWorkspace = "4"
+bundleId = "com.tinyspeck.slackmacgap"
+id = "E0BC773B-83D1-4627-87BC-2D27D3B664F0"
+
+[[appRules]]
+assignToWorkspace = "4"
+bundleId = "ru.keepcoder.Telegram"
+id = "92359424-58E2-476F-8483-9AF30B234A39"
+
+[[appRules]]
+assignToWorkspace = "4"
+bundleId = "net.whatsapp.WhatsApp"
+id = "B70241AB-0B9B-4CBF-A5C3-6FD85DD37AFA"
 
 [[hotkeys]]
 binding = "Hyper+1"
@@ -920,25 +938,3 @@ name = "7"
 
 [workspaces.monitorAssignment]
 type = "secondary"
-
-# W2: browser
-[[appRules]]
-bundleId = "company.thebrowser.Browser"
-id = "EEC55F7E-30BC-4B02-B0B4-87570C222361"
-assignToWorkspace = "2"
-
-# W4: chats
-[[appRules]]
-bundleId = "com.tinyspeck.slackmacgap"
-id = "E0BC773B-83D1-4627-87BC-2D27D3B664F0"
-assignToWorkspace = "4"
-
-[[appRules]]
-bundleId = "ru.keepcoder.Telegram"
-id = "92359424-58E2-476F-8483-9AF30B234A39"
-assignToWorkspace = "4"
-
-[[appRules]]
-bundleId = "net.whatsapp.WhatsApp"
-id = "B70241AB-0B9B-4CBF-A5C3-6FD85DD37AFA"
-assignToWorkspace = "4"
