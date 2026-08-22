@@ -1,8 +1,9 @@
 # better-mac hotkey layer (starter) — cmd+alt combos to avoid shadowing
 # in-app shortcuts. skhd does not hot-reload: apply changes with `skhd -r`.
 
-# launch apps
-cmd + alt - t : open -na Ghostty
-cmd + alt - b : open -na Arc
+# launch apps (no -n: activate the running instance instead of spawning a
+# new one — Arc and most mac apps are single-instance)
+cmd + alt - t : open -a Ghostty
+cmd + alt - b : open -a Arc
 
 # window management bindings arrive with the WM decision (OmniWM vs AeroSpace)
