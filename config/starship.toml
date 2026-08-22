@@ -1,7 +1,7 @@
 add_newline = true
 command_timeout = 1000
 format = """
-╭─ $directory$git_branch$git_status$golang$nix_shell$direnv$package
+╭─ $directory$git_branch$git_status$golang$rust$nix_shell$direnv
 ╰─ $character"""
 
 [character]
@@ -59,6 +59,9 @@ tag_symbol = 'tag '
 [golang]
 format = 'Go [$symbol($version )($mod_version )]($style)'
 
+[rust]
+format = 'Rust [$symbol($version )]($style)'
+
 [nix_shell]
 disabled = false
 impure_msg = '[impure shell](bold red)'
@@ -70,8 +73,7 @@ format = 'Nix [☃️ $state( \($name\))](bold blue) '
 disabled = false
 
 [package]
-disabled = false
-format = 'via [🎁 $version](208 bold) '
+disabled = true
 
 # Shows kubernetes context and namespace
 [kubernetes]
