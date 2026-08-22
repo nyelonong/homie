@@ -17,7 +17,7 @@ green = 0.9175233840942383
 red = 0.9167542457580566
 
 [clipboard]
-historyEnabled = false
+historyEnabled = true
 maxItemBytes = 8388608
 maxItems = 200
 maxTotalBytes = 67108864
@@ -848,7 +848,7 @@ binding = "Unassigned"
 id = "toggleHiddenBarPanel"
 
 [[hotkeys]]
-binding = "Option+Grave"
+binding = "Hyper+Grave"
 id = "toggleQuakeTerminal"
 
 [[hotkeys]]
