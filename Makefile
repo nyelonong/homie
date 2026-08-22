@@ -1,4 +1,4 @@
-.PHONY: switch update fmt show clean help omniwm-deploy omniwm-harvest
+.PHONY: switch update fmt show clean help omniwm-deploy omniwm-harvest validate-omniwm
 
 PROFILE ?= zaki
 
@@ -11,8 +11,11 @@ switch: ## Apply config for PROFILE (default: zaki)
 update: ## Update flake inputs, then apply
 	nix flake update && home-manager switch --flake .#$(PROFILE)
 
-fmt: ## Format all Nix files
+fmt: validate-omniwm ## Format all Nix files and validate OmniWM settings
 	nixfmt *.nix hosts/*.nix
+
+validate-omniwm:
+	python3 scripts/validate-omniwm.py
 
 show: ## Inspect the flake outputs
 	nix flake show
