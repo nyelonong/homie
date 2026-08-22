@@ -477,11 +477,11 @@ binding = "Unassigned"
 id = "expelWindowFromColumn"
 
 [[hotkeys]]
-binding = "Control+Command+Tab"
+binding = "Hyper+N"
 id = "focusMonitorNext"
 
 [[hotkeys]]
-binding = "Unassigned"
+binding = "Hyper+P"
 id = "focusMonitorPrevious"
 
 [[hotkeys]]
