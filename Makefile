@@ -1,5 +1,5 @@
 .PHONY: install switch update fmt check show clean help
-.PHONY: omniwm-deploy omniwm-harvest validate-omniwm test-omniwm
+.PHONY: omniwm-deploy omniwm-harvest validate-omniwm test-omniwm test-profiles
 
 PROFILE ?= zaki
 NIX_FILES := $(shell git ls-files --cached --others --exclude-standard -- '*.nix')
@@ -22,7 +22,10 @@ validate-omniwm:
 test-omniwm: ## Test OmniWM seed and deployment behavior
 	python3 -B -m unittest -v tests/test_omniwm_deployment.py
 
-check: validate-omniwm test-omniwm ## Run repository checks
+test-profiles: ## Test profile ownership boundaries
+	python3 -B -m unittest -v tests/test_profile_boundaries.py
+
+check: validate-omniwm test-omniwm test-profiles ## Run repository checks
 	nix fmt -- --check $(NIX_FILES)
 	sh -n bootstrap.sh
 	nix run nixpkgs#shellcheck -- bootstrap.sh

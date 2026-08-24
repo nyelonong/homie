@@ -9,35 +9,29 @@
     stateVersion = "26.05";
     # username + homeDirectory are per-machine; see ./hosts/*.nix
 
-    packages =
-      with pkgs;
-      [
-        # vcs (delta: git pager, wired in .gitconfig)
-        git
-        gh
-        delta
+    packages = with pkgs; [
+      # vcs (delta: git pager, wired in .gitconfig)
+      git
+      gh
+      delta
 
-        # lang / versioning (runtime versions: see programs.mise below)
-        nixfmt
-        nil
+      # lang / versioning (runtime versions: see programs.mise below)
+      nixfmt
+      nil
 
-        # cli tools
-        eza
-        bat
-        fd
-        ripgrep
-        jq
-        tealdeer
+      # cli tools
+      eza
+      bat
+      fd
+      ripgrep
+      jq
+      tealdeer
 
-        # fonts
-        pkgs.nerd-fonts.fira-code
-        pkgs.nerd-fonts.droid-sans-mono
-        pkgs.nerd-fonts.hack
-      ]
-      # mac desktop layer (better-mac exploration) — Linux profiles must not see these
-      ++ lib.optionals pkgs.stdenv.isDarwin [
-        skhd
-      ];
+      # fonts
+      pkgs.nerd-fonts.fira-code
+      pkgs.nerd-fonts.droid-sans-mono
+      pkgs.nerd-fonts.hack
+    ];
 
     sessionVariables = {
       GOPATH = "${config.home.homeDirectory}/Projects/go";
@@ -66,51 +60,10 @@
     file.".gitconfig" = {
       source = ./.gitconfig;
     };
-
-    file.".skhdrc" = {
-      source = ./config/skhd/skhdrc;
-    };
-  };
-
-  launchd.agents = lib.mkIf pkgs.stdenv.isDarwin {
-    skhd = {
-      enable = true;
-      config = {
-        ProgramArguments = [ "${pkgs.skhd}/bin/skhd" ];
-        KeepAlive = true;
-        RunAtLoad = true;
-      };
-    };
   };
 
   xdg.enable = true;
   fonts.fontconfig.enable = true;
-
-  # OmniWM owns its live settings file — it rewrites it on every quit, so a
-  # symlink from the repo just breaks. The repo copy is a seed: installed when
-  # missing (or when the live file is still one of our old symlinks), then the
-  # GUI wins until `make omniwm-harvest` pulls changes back into the repo.
-  home.activation.seedOmniWM = lib.mkIf pkgs.stdenv.isDarwin (
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      live="$HOME/.config/omniwm/settings.toml"
-      if [ -L "$live" ]; then
-        rm "$live"
-        mkdir -p "$(dirname "$live")"
-        install -m 0644 "${./apps/omniwm/settings.toml}" "$live"
-      elif [ ! -f "$live" ]; then
-        mkdir -p "$(dirname "$live")"
-        install -m 0644 "${./apps/omniwm/settings.toml}" "$live"
-      fi
-    ''
-  );
-
-  # Reload skhd after every switch so .skhdrc edits land immediately;
-  # harmless no-op when skhd isn't running (fresh boot: RunAtLoad starts it).
-  home.activation.reloadSkhd = lib.mkIf pkgs.stdenv.isDarwin (
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      ${pkgs.skhd}/bin/skhd -r || true
-    ''
-  );
 
   programs = {
     home-manager.enable = true;
