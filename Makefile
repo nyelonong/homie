@@ -2,7 +2,7 @@
 .PHONY: omniwm-deploy omniwm-harvest validate-omniwm test-omniwm test-profiles
 
 PROFILE ?= zaki
-NIX_FILES := $(shell git ls-files --cached --others --exclude-standard -- '*.nix')
+NIX_FILES := $(wildcard $(shell git ls-files --cached --others --exclude-standard -- '*.nix'))
 
 install: ## Install home-manager
 	nix run github:nix-community/home-manager -- switch --flake .#$(PROFILE)
