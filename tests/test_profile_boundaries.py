@@ -25,6 +25,16 @@ class ProfileBoundaryTest(unittest.TestCase):
         )
         return json.loads(result.stdout)
 
+    def config_text(self, profile: str, path: str) -> str:
+        target = f'.#homeConfigurations."{profile}".config.{path}'
+        return subprocess.run(
+            ["nix", "eval", "--raw", target],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout
+
     def test_desktop_lifecycle_belongs_only_to_personal_profile(self) -> None:
         boundaries = (
             ("launchd.agents", "skhd"),
@@ -41,6 +51,35 @@ class ProfileBoundaryTest(unittest.TestCase):
             for path, name in boundaries:
                 with self.subTest(profile=profile, path=path, name=name):
                     self.assertFalse(self.config_has(profile, path, name))
+
+    def test_cekat_shell_wrapper_belongs_only_to_work_profile(self) -> None:
+        for profile in ("zaki", "zaki@windows"):
+            with self.subTest(profile=profile):
+                init = self.config_text(profile, "programs.zsh.initContent")
+                self.assertNotIn("function pi-cekat()", init)
+
+        cekat_init = self.config_text("zaki@cekat", "programs.zsh.initContent")
+        self.assertIn("function pi-cekat()", cekat_init)
+
+    def test_cekat_zed_model_belongs_only_to_work_profile(self) -> None:
+        for profile in ("zaki", "zaki@windows"):
+            with self.subTest(profile=profile):
+                settings = json.loads(
+                    self.config_text(
+                        profile,
+                        'home.file.".config/zed/settings.json".text',
+                    )
+                )
+                self.assertNotIn("litellm/azure_ai/gpt-5.6-terra", json.dumps(settings))
+
+        cekat_settings = json.loads(
+            self.config_text(
+                "zaki@cekat",
+                'home.file.".config/zed/settings.json".text',
+            )
+        )
+        model = cekat_settings["agent_servers"]["pi-acp"]["default_config_options"]["model"]
+        self.assertEqual(model, "litellm/azure_ai/gpt-5.6-terra")
 
 
 if __name__ == "__main__":

@@ -43,13 +43,22 @@
     ];
 
     # Replace app-created files at paths owned by the repository.
-    file.".config" = {
-      source = ../config;
-      recursive = true;
-      force = true;
-    };
-    file.".gitconfig" = {
-      source = ../.gitconfig;
+    file = {
+      ".config/starship.toml" = {
+        source = ../config/starship.toml;
+        force = true;
+      };
+      ".config/helix/config.toml" = {
+        source = ../config/helix/config.toml;
+        force = true;
+      };
+      ".config/zed/settings.json" = {
+        text = builtins.readFile ../config/zed/settings.json;
+        force = true;
+      };
+      ".gitconfig" = {
+        source = ../.gitconfig;
+      };
     };
   };
 

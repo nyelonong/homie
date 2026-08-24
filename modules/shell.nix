@@ -20,14 +20,6 @@
           source "${config.home.homeDirectory}/.zshrc.local"
         fi
 
-        function pi-cekat() {
-          local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
-          command "$cli" set-status pi "litellm · azure_ai/gpt-5.6-terra" --icon sparkle --priority 90 >/dev/null 2>&1 || true
-          command pi --provider litellm --model azure_ai/gpt-5.6-terra "$@"
-          local rc=$?
-          command "$cli" clear-status pi >/dev/null 2>&1 || true
-          return $rc
-        }
         function pi-codex() {
           local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
           command "$cli" set-status pi "openai-codex · gpt-5.6-terra" --icon sparkle --priority 90 >/dev/null 2>&1 || true
