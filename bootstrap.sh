@@ -6,7 +6,8 @@ set -eu
 REPO_HTTPS="https://github.com/nyelonong/homie.git"
 REPO_SSH="git@github.com:nyelonong/homie.git"
 REPO_DIR="$HOME/homie"
-KEY="$HOME/.ssh/id_ed25519"
+KEY_DIR="$HOME/.ssh"
+KEY="$KEY_DIR/id_ed25519"
 
 say() { printf '\n==> %s\n' "$*"; }
 die() {
@@ -86,6 +87,8 @@ if [ -f "$KEY" ]; then
   say "ssh key exists: $KEY"
 else
   say "generating ssh key (needed later if you want to push private repos)"
+  mkdir -p "$KEY_DIR"
+  chmod 700 "$KEY_DIR"
   ssh-keygen -t ed25519 -C "$(id -un)@$(hostname)" -f "$KEY"
   say "add this public key to GitHub when convenient: https://github.com/settings/ssh/new"
   cat "$KEY.pub"

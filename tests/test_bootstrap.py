@@ -1,4 +1,5 @@
 import os
+import shutil
 import stat
 import subprocess
 import tempfile
@@ -53,6 +54,20 @@ case "$*" in
 esac
 """,
         )
+        self.write_executable(
+            "ssh-keygen",
+            """#!/bin/sh
+printf 'ssh-keygen' >> "$COMMAND_LOG"
+key=''
+while [ "$#" -gt 0 ]; do
+  if [ "$1" = '-f' ]; then shift; key="$1"; fi
+  shift
+done
+printf '\t%s\n' "$key" >> "$COMMAND_LOG"
+[ -d "$(dirname "$key")" ] || exit 91
+touch "$key" "$key.pub"
+""",
+        )
 
     def tearDown(self) -> None:
         self.temporary.cleanup()
@@ -74,8 +89,18 @@ esac
             "HOME": str(self.home),
             "PATH": f"{self.bin}:/usr/bin:/bin",
             "COMMAND_LOG": str(self.log),
-            **overrides,
         }
+        inherited_controls = (
+            "PROFILE",
+            "FAKE_OS",
+            "FAKE_KERNEL_RELEASE",
+            "FAKE_REMOTE",
+            "FAKE_STATUS",
+            "FAKE_BRANCH",
+        )
+        for name in inherited_controls:
+            environment.pop(name, None)
+        environment.update(overrides)
         return subprocess.run(
             ["/bin/sh", str(BOOTSTRAP)],
             cwd=ROOT,
@@ -88,7 +113,10 @@ esac
         return self.log.read_text() if self.log.exists() else ""
 
     def test_rejects_non_wsl_linux(self) -> None:
-        result = self.run_bootstrap(FAKE_OS="Linux", FAKE_KERNEL_RELEASE="6.12.0-generic")
+        result = self.run_bootstrap(
+            FAKE_OS="Linux",
+            FAKE_KERNEL_RELEASE="6.12.0-generic",
+        )
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("WSL", result.stderr)
@@ -135,7 +163,10 @@ esac
 
         self.assertEqual(result.returncode, 0, result.stderr)
         commands = self.commands()
-        self.assertIn("git\t-C\t" + str(self.home / "homie") + "\tfetch\t--prune\torigin", commands)
+        self.assertIn(
+            "git\t-C\t" + str(self.home / "homie") + "\tfetch\t--prune\torigin",
+            commands,
+        )
         self.assertIn(
             "git\t-C\t" + str(self.home / "homie") + "\tmerge\t--ff-only\torigin/main",
             commands,
@@ -149,10 +180,26 @@ esac
 
         self.assertEqual(result.returncode, 0, result.stderr)
         commands = self.commands()
-        self.assertIn(f"nix\trun\t{repo}#home-manager\t--\tswitch\t--flake\t{repo}#zaki", commands)
+        self.assertIn(
+            f"nix\trun\t{repo}#home-manager\t--\tswitch\t--flake\t{repo}#zaki",
+            commands,
+        )
         self.assertIn(f"nix\trun\t{repo}#mise\t--\tinstall\t--yes", commands)
         self.assertNotIn("github:nix-community/home-manager", commands)
         self.assertNotIn("nixpkgs#mise", commands)
+
+    def test_creates_ssh_directory_before_generating_key(self) -> None:
+        self.existing_repo()
+        shutil.rmtree(self.home / ".ssh")
+
+        result = self.run_bootstrap()
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((self.home / ".ssh").is_dir())
+        self.assertIn(
+            "ssh-keygen\t" + str(self.home / ".ssh/id_ed25519"),
+            self.commands(),
+        )
 
     def test_wsl_uses_windows_profile(self) -> None:
         repo = self.existing_repo()
