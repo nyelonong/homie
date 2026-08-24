@@ -245,6 +245,11 @@ bundleId = "company.thebrowser.Browser"
 id = "EEC55F7E-30BC-4B02-B0B4-87570C222361"
 
 [[appRules]]
+assignToWorkspace = "2"
+bundleId = "md.obsidian"
+id = "EA880732-2D2D-4083-A5C2-DDCA17FF9D9E"
+
+[[appRules]]
 assignToWorkspace = "3"
 bundleId = "com.tinyspeck.slackmacgap"
 id = "E0BC773B-83D1-4627-87BC-2D27D3B664F0"
