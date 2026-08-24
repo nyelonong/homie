@@ -18,6 +18,11 @@
   outputs =
     { nixpkgs, home-manager, ... }:
     let
+      supportedSystems = [
+        "aarch64-darwin"
+        "x86_64-linux"
+      ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       mkHome =
         system: extra:
         home-manager.lib.homeManagerConfiguration {
@@ -29,10 +34,18 @@
         };
     in
     {
-      formatter = {
-        aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.nixfmt;
-        x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt;
-      };
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
+
+      apps = forAllSystems (system: {
+        home-manager = {
+          type = "app";
+          program = "${home-manager.packages.${system}.home-manager}/bin/home-manager";
+        };
+        mise = {
+          type = "app";
+          program = "${nixpkgs.legacyPackages.${system}.mise}/bin/mise";
+        };
+      });
 
       homeConfigurations = {
         "zaki" = mkHome "aarch64-darwin" [ ./hosts/personal.nix ]; # personal mac

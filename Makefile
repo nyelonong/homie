@@ -1,17 +1,17 @@
 .PHONY: install switch update fmt check show clean help
-.PHONY: omniwm-deploy omniwm-harvest validate-omniwm test-omniwm test-profiles
+.PHONY: omniwm-deploy omniwm-harvest validate-omniwm test-omniwm test-profiles test-bootstrap
 
 PROFILE ?= zaki
 NIX_FILES := $(wildcard $(shell git ls-files --cached --others --exclude-standard -- '*.nix'))
 
-install: ## Install home-manager
-	nix run github:nix-community/home-manager -- switch --flake .#$(PROFILE)
+install: ## Apply config with the locked Home Manager
+	nix run .#home-manager -- switch --flake .#$(PROFILE)
 
 switch: ## Apply config for PROFILE (default: zaki)
-	home-manager switch --flake .#$(PROFILE)
+	nix run .#home-manager -- switch --flake .#$(PROFILE)
 
 update: ## Update flake inputs, then apply
-	nix flake update && home-manager switch --flake .#$(PROFILE)
+	nix flake update && $(MAKE) switch PROFILE=$(PROFILE)
 
 fmt: validate-omniwm ## Format all Nix files and validate OmniWM settings
 	nixfmt $(NIX_FILES)
@@ -25,7 +25,10 @@ test-omniwm: ## Test OmniWM seed and deployment behavior
 test-profiles: ## Test profile ownership boundaries
 	python3 -B -m unittest -v tests/test_profile_boundaries.py
 
-check: validate-omniwm test-omniwm test-profiles ## Run repository checks
+test-bootstrap: ## Test fresh-machine and rerun behavior
+	python3 -B -m unittest -v tests/test_bootstrap.py
+
+check: validate-omniwm test-omniwm test-profiles test-bootstrap ## Run repository checks
 	nix fmt -- --check $(NIX_FILES)
 	sh -n bootstrap.sh
 	nix run nixpkgs#shellcheck -- bootstrap.sh

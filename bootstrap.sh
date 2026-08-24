@@ -1,23 +1,49 @@
 #!/bin/sh
-# Fresh-machine bootstrap: nix + clone + home-manager. OS/dotfiles/packages only.
+# Fresh-machine bootstrap: Nix, this repository, Home Manager, and pinned runtimes.
 # Usage: curl -fsSL https://raw.githubusercontent.com/nyelonong/homie/main/bootstrap.sh | sh
-# Re-runnable: every step skips work already done. PROFILE=... overrides the
-# OS-based default (zaki on macOS, zaki@windows on WSL2).
 set -eu
 
 REPO_HTTPS="https://github.com/nyelonong/homie.git"
+REPO_SSH="git@github.com:nyelonong/homie.git"
 REPO_DIR="$HOME/homie"
 KEY="$HOME/.ssh/id_ed25519"
 
 say() { printf '\n==> %s\n' "$*"; }
+die() {
+  printf 'error: %s\n' "$*" >&2
+  exit 1
+}
+run_git() {
+  if command -v git >/dev/null 2>&1 && git --version >/dev/null 2>&1; then
+    git "$@"
+  else
+    nix run nixpkgs#git -- "$@"
+  fi
+}
 
 os="$(uname -s)"
 case "$os" in
-  Darwin | Linux) ;;
-  *)
-    echo "unsupported OS: $os" >&2
-    exit 1
+  Darwin) ;;
+  Linux)
+    kernel_release="$(uname -r | tr '[:upper:]' '[:lower:]')"
+    case "$kernel_release" in
+      *microsoft* | *wsl*) ;;
+      *) die "unsupported Linux environment: this repository supports WSL" ;;
+    esac
     ;;
+  *) die "unsupported OS: $os" ;;
+esac
+
+if [ -z "${PROFILE:-}" ]; then
+  if [ "$os" = "Linux" ]; then
+    PROFILE="zaki@windows"
+  else
+    PROFILE="zaki"
+  fi
+fi
+case "$os:$PROFILE" in
+  Darwin:zaki | Darwin:zaki@cekat | Linux:zaki@windows) ;;
+  *) die "profile $PROFILE is not supported on $os" ;;
 esac
 
 if command -v nix >/dev/null 2>&1; then
@@ -26,23 +52,36 @@ else
   say "installing nix (Determinate Systems installer)"
   curl --proto '=https' --tlsv1.2 -fsSL https://install.determinate.systems/nix | sh -s -- install --no-confirm
 fi
-# the installer only edits shell rc files; load nix into THIS shell
 if ! command -v nix >/dev/null 2>&1; then
-  # This file only exists after nix installation; shellcheck can't verify at linting time
   # shellcheck disable=SC1091
   . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 fi
 
-if [ -d "$REPO_DIR" ]; then
-  say "repo exists: $REPO_DIR"
+if [ -e "$REPO_DIR" ]; then
+  if [ ! -e "$REPO_DIR/.git" ] || [ ! -f "$REPO_DIR/flake.nix" ]; then
+    die "$REPO_DIR exists but is not the homie Git repository"
+  fi
+
+  remote="$(run_git -C "$REPO_DIR" remote get-url origin)"
+  case "$remote" in
+    "$REPO_HTTPS" | "$REPO_SSH" | ssh://git@github.com/nyelonong/homie.git) ;;
+    *) die "unexpected origin for $REPO_DIR: $remote" ;;
+  esac
+
+  branch="$(run_git -C "$REPO_DIR" symbolic-ref --short HEAD)"
+  [ "$branch" = "main" ] || die "$REPO_DIR must be on main, found $branch"
+  if [ -n "$(run_git -C "$REPO_DIR" status --porcelain)" ]; then
+    die "$REPO_DIR has uncommitted changes; preserve them before rerunning bootstrap"
+  fi
+
+  say "updating $REPO_DIR"
+  run_git -C "$REPO_DIR" fetch --prune origin
+  run_git -C "$REPO_DIR" merge --ff-only origin/main
 else
   say "cloning $REPO_HTTPS"
-  nix run nixpkgs#git -- clone "$REPO_HTTPS" "$REPO_DIR"
+  run_git clone "$REPO_HTTPS" "$REPO_DIR"
 fi
 
-# not needed for the clone above (public repo, read-only over HTTPS) — this
-# is just for pushing back later, and for the private repos cloned separately.
-# Skipped silently if a key already exists.
 if [ -f "$KEY" ]; then
   say "ssh key exists: $KEY"
 else
@@ -52,20 +91,10 @@ else
   cat "$KEY.pub"
 fi
 
-if [ -z "${PROFILE:-}" ]; then
-  if [ "$os" = "Linux" ]; then
-    PROFILE="zaki@windows"
-  else
-    PROFILE="zaki"
-  fi
-fi
+say "applying Home Manager configuration (profile: $PROFILE)"
+nix run "$REPO_DIR#home-manager" -- switch --flake "$REPO_DIR#$PROFILE"
 
-say "applying home-manager configuration (profile: $PROFILE)"
-nix run github:nix-community/home-manager -- switch --flake "$REPO_DIR#$PROFILE"
-
-# language runtimes pinned in home.nix (programs.mise.globalConfig.tools);
-# the switch above wrote ~/.config/mise/config.toml, this materializes it
 say "installing pinned language runtimes"
-nix run nixpkgs#mise -- install --yes
+nix run "$REPO_DIR#mise" -- install --yes
 
 say "done — restart your shell"
