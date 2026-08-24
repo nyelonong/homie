@@ -25,7 +25,7 @@
             inherit system;
             config.allowUnfree = true;
           };
-          modules = [ ./home.nix ] ++ extra;
+          modules = (import ./home.nix) ++ extra;
         };
     in
     {
