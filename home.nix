@@ -72,9 +72,6 @@
     };
   };
 
-  # Daemons for the mac desktop layer. Borders comes from Brew (FelixKratz tap,
-  # not packaged in nixpkgs), so its agent pins the Brew path — a `brew upgrade
-  # borders` swaps the binary under the running agent; KeepAlive absorbs that.
   launchd.agents = lib.mkIf pkgs.stdenv.isDarwin {
     skhd = {
       enable = true;

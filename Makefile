@@ -1,4 +1,5 @@
-.PHONY: switch update fmt show clean help omniwm-deploy omniwm-harvest validate-omniwm
+.PHONY: install switch update fmt check show clean help
+.PHONY: omniwm-deploy omniwm-harvest validate-omniwm test-omniwm
 
 PROFILE ?= zaki
 
@@ -16,6 +17,14 @@ fmt: validate-omniwm ## Format all Nix files and validate OmniWM settings
 
 validate-omniwm:
 	python3 scripts/validate-omniwm.py
+
+test-omniwm: ## Test OmniWM seed and deployment behavior
+	python3 -B -m unittest -v tests/test_omniwm_deployment.py
+
+check: validate-omniwm test-omniwm ## Run repository checks
+	nix fmt -- --check *.nix hosts/*.nix
+	sh -n bootstrap.sh
+	nix run nixpkgs#shellcheck -- bootstrap.sh
 
 show: ## Inspect the flake outputs
 	nix flake show
@@ -39,4 +48,4 @@ omniwm-harvest: ## Pull live OmniWM settings back into the repo for review
 	@echo "Review the diff above (git diff), then commit what you want to keep."
 
 help: ## List targets
-	@grep -E '^[a-z]+:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/'
+	@grep -E '^[[:alnum:]_-]+:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/'

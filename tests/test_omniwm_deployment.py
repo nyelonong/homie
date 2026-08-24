@@ -80,6 +80,46 @@ class OmniWMDeploymentTest(unittest.TestCase):
             self.assertEqual(stat.S_IMODE(live.stat().st_mode), 0o644)
             self.assertEqual(events.read_text(), "stop\nopen\n")
 
+    def test_deploy_fails_before_copy_when_app_does_not_stop(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            home = root / "home"
+            live = home / ".config/omniwm/settings.toml"
+            live.parent.mkdir(parents=True)
+            live.write_text("current app state\n")
+            events = root / "events"
+            fake_bin = root / "bin"
+            fake_bin.mkdir()
+            self.write_executable(
+                fake_bin / "pkill",
+                '#!/bin/sh\nprintf "stop\\n" >> "$OMNIWM_TEST_EVENTS"\n',
+            )
+            self.write_executable(fake_bin / "pgrep", "#!/bin/sh\nexit 0\n")
+            self.write_executable(fake_bin / "sleep", "#!/bin/sh\nexit 0\n")
+            self.write_executable(
+                fake_bin / "open",
+                '#!/bin/sh\nprintf "open\\n" >> "$OMNIWM_TEST_EVENTS"\n',
+            )
+
+            result = subprocess.run(
+                ["make", "omniwm-deploy"],
+                cwd=REPO_ROOT,
+                env={
+                    **os.environ,
+                    "HOME": str(home),
+                    "OMNIWM_TEST_EVENTS": str(events),
+                    "PATH": f"{fake_bin}:{os.environ['PATH']}",
+                },
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("OmniWM did not stop", result.stderr)
+            self.assertEqual(live.read_text(), "current app state\n")
+            self.assertEqual(events.read_text(), "stop\n")
+
     def write_executable(self, path: Path, content: str) -> None:
         path.write_text(content)
         path.chmod(0o755)
