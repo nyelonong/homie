@@ -99,10 +99,10 @@
       if [ -L "$live" ]; then
         rm "$live"
         mkdir -p "$(dirname "$live")"
-        cp "${./apps/omniwm/settings.toml}" "$live"
+        install -m 0644 "${./apps/omniwm/settings.toml}" "$live"
       elif [ ! -f "$live" ]; then
         mkdir -p "$(dirname "$live")"
-        cp "${./apps/omniwm/settings.toml}" "$live"
+        install -m 0644 "${./apps/omniwm/settings.toml}" "$live"
       fi
     ''
   );
