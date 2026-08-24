@@ -2,6 +2,7 @@
 .PHONY: omniwm-deploy omniwm-harvest validate-omniwm test-omniwm
 
 PROFILE ?= zaki
+NIX_FILES := $(shell git ls-files --cached --others --exclude-standard -- '*.nix')
 
 install: ## Install home-manager
 	nix run github:nix-community/home-manager -- switch --flake .#$(PROFILE)
@@ -13,7 +14,7 @@ update: ## Update flake inputs, then apply
 	nix flake update && home-manager switch --flake .#$(PROFILE)
 
 fmt: validate-omniwm ## Format all Nix files and validate OmniWM settings
-	nixfmt *.nix hosts/*.nix
+	nixfmt $(NIX_FILES)
 
 validate-omniwm:
 	python3 scripts/validate-omniwm.py
@@ -22,7 +23,7 @@ test-omniwm: ## Test OmniWM seed and deployment behavior
 	python3 -B -m unittest -v tests/test_omniwm_deployment.py
 
 check: validate-omniwm test-omniwm ## Run repository checks
-	nix fmt -- --check *.nix hosts/*.nix
+	nix fmt -- --check $(NIX_FILES)
 	sh -n bootstrap.sh
 	nix run nixpkgs#shellcheck -- bootstrap.sh
 
