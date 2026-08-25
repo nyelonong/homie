@@ -60,6 +60,7 @@ class ProfileBoundaryTest(unittest.TestCase):
 
         cekat_init = self.config_text("zaki@cekat", "programs.zsh.initContent")
         self.assertIn("function pi-cekat()", cekat_init)
+        self.assertIn("mise exec node@26.5.0 -- pi", cekat_init)
 
     def test_cekat_zed_model_belongs_only_to_work_profile(self) -> None:
         for profile in ("zaki", "zaki@windows"):

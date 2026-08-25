@@ -1,5 +1,11 @@
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
+  piNodeVersion = config.programs.mise.globalConfig.tools.node;
   zedSettings =
     lib.recursiveUpdate (builtins.fromJSON (builtins.readFile ../config/zed/settings.json))
       {
@@ -35,7 +41,7 @@ in
     function pi-cekat() {
       local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
       command "$cli" set-status pi "litellm · azure_ai/gpt-5.6-terra" --icon sparkle --priority 90 >/dev/null 2>&1 || true
-      command pi --provider litellm --model azure_ai/gpt-5.6-terra "$@"
+      command mise exec node@${piNodeVersion} -- pi --provider litellm --model azure_ai/gpt-5.6-terra "$@"
       local rc=$?
       command "$cli" clear-status pi >/dev/null 2>&1 || true
       return $rc
