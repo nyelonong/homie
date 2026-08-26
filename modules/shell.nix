@@ -1,7 +1,4 @@
 { config, lib, ... }:
-let
-  piNodeVersion = config.programs.mise.globalConfig.tools.node;
-in
 {
   programs = {
     zsh = {
@@ -17,36 +14,10 @@ in
         dif = "git diff";
       };
 
-      # pi-* wrappers stamp the provider and model on the cmux workspace tab.
       initContent = lib.mkAfter ''
         if [ -r "${config.home.homeDirectory}/.zshrc.local" ]; then
           source "${config.home.homeDirectory}/.zshrc.local"
         fi
-
-        function pi-codex() {
-          local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
-          command "$cli" set-status pi "openai-codex · gpt-5.6-terra" --icon sparkle --priority 90 >/dev/null 2>&1 || true
-          command mise exec node@${piNodeVersion} -- pi --provider openai-codex --model gpt-5.6-terra "$@"
-          local rc=$?
-          command "$cli" clear-status pi >/dev/null 2>&1 || true
-          return $rc
-        }
-        function pi-opencode() {
-          local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
-          command "$cli" set-status pi "opencode-go · mimo-v2.5" --icon sparkle --priority 90 >/dev/null 2>&1 || true
-          command mise exec node@${piNodeVersion} -- pi --provider opencode-go --model mimo-v2.5 "$@"
-          local rc=$?
-          command "$cli" clear-status pi >/dev/null 2>&1 || true
-          return $rc
-        }
-        function pi-openrouter() {
-          local cli="''${CMUX_BUNDLED_CLI_PATH:-cmux}"
-          command "$cli" set-status pi "openrouter · z-ai/glm-5.2" --icon sparkle --priority 90 >/dev/null 2>&1 || true
-          command mise exec node@${piNodeVersion} -- pi --provider openrouter --model z-ai/glm-5.2 "$@"
-          local rc=$?
-          command "$cli" clear-status pi >/dev/null 2>&1 || true
-          return $rc
-        }
       '';
     };
 

@@ -108,7 +108,7 @@ flake.nix            locked inputs, apps, and active homeConfigurations
 home.nix             ordered list of shared Home Manager modules
 modules/base.nix     packages, paths, environment, fonts, static dotfiles
 modules/runtimes.nix mise and direnv configuration
-modules/shell.nix    shared Zsh, aliases, prompt, and provider wrappers
+modules/shell.nix    shared Zsh, aliases, and prompt configuration
 modules/darwin-desktop.nix
                      personal skhd service and OmniWM activation lifecycle
 hosts/               active per-machine identity, packages, and overrides

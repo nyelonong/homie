@@ -52,15 +52,15 @@ class ProfileBoundaryTest(unittest.TestCase):
                 with self.subTest(profile=profile, path=path, name=name):
                     self.assertFalse(self.config_has(profile, path, name))
 
-    def test_cekat_shell_wrapper_belongs_only_to_work_profile(self) -> None:
-        for profile in ("zaki", "zaki@windows"):
+    def test_shell_has_no_cmux_pi_wrappers(self) -> None:
+        for profile in ("zaki", "zaki@cekat", "zaki@windows"):
             with self.subTest(profile=profile):
                 init = self.config_text(profile, "programs.zsh.initContent")
                 self.assertNotIn("function pi-cekat()", init)
-
-        cekat_init = self.config_text("zaki@cekat", "programs.zsh.initContent")
-        self.assertIn("function pi-cekat()", cekat_init)
-        self.assertIn("mise exec node@26.5.0 -- pi", cekat_init)
+                self.assertNotIn("function pi-codex()", init)
+                self.assertNotIn("function pi-opencode()", init)
+                self.assertNotIn("function pi-openrouter()", init)
+                self.assertNotIn("CMUX_BUNDLED_CLI_PATH", init)
 
     def test_cekat_zed_model_belongs_only_to_work_profile(self) -> None:
         for profile in ("zaki", "zaki@windows"):
