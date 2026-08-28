@@ -56,6 +56,10 @@
         text = builtins.readFile ../config/zed/settings.json;
         force = true;
       };
+      ".config/zed/keymap.json" = {
+        text = builtins.readFile ../config/zed/keymap.json;
+        force = true;
+      };
       ".gitconfig" = {
         source = ../.gitconfig;
       };
