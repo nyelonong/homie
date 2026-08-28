@@ -2,10 +2,10 @@
   {
     "context": "Terminal",
     "bindings": {
-      "cmd-alt-up": "workspace::ActivatePaneUp",
-      "cmd-alt-down": "workspace::ActivatePaneDown",
-      "cmd-alt-left": "workspace::ActivatePaneLeft",
-      "cmd-alt-right": "workspace::ActivatePaneRight"
+      "ctrl-cmd-up": "workspace::ActivatePaneUp",
+      "ctrl-cmd-down": "workspace::ActivatePaneDown",
+      "ctrl-cmd-left": "workspace::ActivatePaneLeft",
+      "ctrl-cmd-right": "workspace::ActivatePaneRight"
     }
   }
 ]
