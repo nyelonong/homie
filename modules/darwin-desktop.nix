@@ -5,34 +5,10 @@
 }:
 {
   home = {
-    packages = lib.optionals pkgs.stdenv.isDarwin [
-      pkgs.skhd
-      pkgs.sketchybar
-    ];
+    packages = lib.optionals pkgs.stdenv.isDarwin [ pkgs.skhd ];
 
     file.".skhdrc" = {
       source = ../.skhdrc;
-    };
-
-    file.".config/sketchybar/sketchybarrc" = {
-      source = ../config/sketchybar/sketchybarrc;
-      executable = true;
-    };
-    file.".config/sketchybar/plugins/omni_listener.sh" = {
-      source = ../config/sketchybar/plugins/omni_listener.sh;
-      executable = true;
-    };
-    file.".config/sketchybar/plugins/workspaces.sh" = {
-      source = ../config/sketchybar/plugins/workspaces.sh;
-      executable = true;
-    };
-    file.".config/sketchybar/plugins/ws_click.sh" = {
-      source = ../config/sketchybar/plugins/ws_click.sh;
-      executable = true;
-    };
-    file.".config/sketchybar/plugins/clock.sh" = {
-      source = ../config/sketchybar/plugins/clock.sh;
-      executable = true;
     };
   };
 
@@ -43,21 +19,6 @@
         ProgramArguments = [ "${pkgs.skhd}/bin/skhd" ];
         KeepAlive = true;
         RunAtLoad = true;
-      };
-    };
-    sketchybar = {
-      enable = true;
-      config = {
-        ProgramArguments = [ "${pkgs.sketchybar}/bin/sketchybar" ];
-        KeepAlive = true;
-        RunAtLoad = true;
-        # Plugins resolve tools via these paths: launchd PATH has no nix
-        # store or brew bin.
-        EnvironmentVariables = {
-          SKETCHYBAR_CLIENT = "${pkgs.sketchybar}/bin/sketchybar";
-          JQ_BIN = "${pkgs.jq}/bin/jq";
-          OMNIWMCTL_BIN = "/opt/homebrew/bin/omniwmctl";
-        };
       };
     };
   };
@@ -81,13 +42,6 @@
   home.activation.reloadSkhd = lib.mkIf pkgs.stdenv.isDarwin (
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       ${pkgs.skhd}/bin/skhd -r || true
-    ''
-  );
-
-  # Sketchybar only reads its config at startup, so restart it after a switch.
-  home.activation.reloadSketchybar = lib.mkIf pkgs.stdenv.isDarwin (
-    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      /bin/launchctl kickstart -k "gui/$UID/org.nix-community.home.sketchybar" || true
     ''
   );
 }

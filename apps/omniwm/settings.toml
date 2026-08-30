@@ -45,7 +45,7 @@ size = 15.0
 bottom = 5.0
 left = 40.0
 right = 64.0
-top = 40.0
+top = 10.0
 
 [general]
 animationsEnabled = true
@@ -140,7 +140,7 @@ useWorkspaceId = true
 [workspaceBar]
 backgroundOpacity = 0.1
 deduplicateAppIcons = false
-enabled = false
+enabled = true
 excludedBundleIDs = []
 height = 24.0
 hideEmptyWorkspaces = false
@@ -875,7 +875,7 @@ monitorName = "Built-in Retina Display"
 outerGapBottom = 5.0
 outerGapLeft = 20.0
 outerGapRight = 64.0
-outerGapTop = 40.0
+outerGapTop = 5.0
 
 [[monitorNiriOverrides]]
 alwaysCenterSingleColumn = true
