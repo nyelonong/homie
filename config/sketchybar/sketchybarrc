@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Minimal bar: OmniWM workspace pills on the left, clock on the right.
+# Updates arrive through the omni_refresh event (see plugins/omni_listener.sh).
+
+SB="${SKETCHYBAR_CLIENT:-sketchybar}"
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+
+WS_COLOR=0xffe8e0d0
+WS_DIM=0x80e8e0d0
+BG_DARK=0xff22252b
+
+"$SB" --bar height=34 color=0x40202020 blur_radius=24 corner_radius=9 margin=8 \
+  --default updates=when_shown \
+            icon.font="SF Pro Text:Regular:14.0" \
+            label.font="SF Pro Text:Regular:13.0" \
+  --add item clock right \
+  --set clock update_freq=30 \
+             script="$PLUGIN_DIR/clock.sh" \
+             label.color="$WS_COLOR" \
+  --add event omni_refresh \
+  --add item omni_ws_events right \
+  --set omni_ws_events width=0 \
+                       background.drawing=off \
+                       icon.drawing=off \
+                       label.drawing=off \
+                       script="$PLUGIN_DIR/omni_listener.sh" \
+                       script_agent=on
+
+ws_args=()
+for i in 1 2 3 4 5; do
+  ws_args+=(--add item "ws.$i" left
+            --set "ws.$i" icon="$i" \
+                          icon.color="$WS_DIM" \
+                          icon.padding_left=9 \
+                          icon.padding_right=9 \
+                          background.height=26 \
+                          background.corner_radius=7 \
+                          background.color=0x00000000 \
+                          background.padding_right=3 \
+                          click_script="$PLUGIN_DIR/ws_click.sh $i")
+done
+"$SB" "${ws_args[@]}"
+
+"$SB" --subscribe omni_ws_events omni_refresh
+"$SB" --trigger omni_refresh
+"$PLUGIN_DIR/clock.sh"
