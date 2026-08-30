@@ -26,17 +26,9 @@
       enableZshIntegration = true;
     };
 
-    # Atuin owns Ctrl-R while fzf keeps its file and directory widgets.
     fzf = {
       enable = true;
       enableZshIntegration = true;
-      historyWidget.zsh.command = "";
-    };
-
-    atuin = {
-      enable = true;
-      enableZshIntegration = true;
-      flags = [ "--disable-up-arrow" ];
     };
 
     starship = {

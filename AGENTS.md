@@ -38,7 +38,7 @@ The configuration has four layers:
 2. **`home.nix`** is the ordered shared-module manifest, not a large option module:
    - **`modules/base.nix`** owns shared CLI packages, `GOPATH`/`GOBIN`, session PATH, fonts, XDG enablement, and static dotfile mappings. Add CLI tools here. Add a `home.file` entry when adding a file under `config/`.
    - **`modules/runtimes.nix`** owns direnv, mise integration, and global runtime pins.
-   - **`modules/shell.nix`** owns shared Zsh aliases, generic Pi provider wrappers, zoxide, fzf, atuin, and Starship.
+   - **`modules/shell.nix`** owns shared Zsh aliases, generic Pi provider wrappers, zoxide, fzf, and Starship.
 
 3. **`hosts/`** contains active profile ownership:
    - `personal.nix` imports `modules/darwin-desktop.nix`, which owns skhd, `~/.skhdrc`, the launchd agent, and OmniWM seed/reload activation.
