@@ -60,6 +60,10 @@
         source = ../config/helix/config.toml;
         force = true;
       };
+      ".config/helix/languages.toml" = {
+        source = ../config/helix/languages.toml;
+        force = true;
+      };
       ".config/zed/settings.json" = {
         text = builtins.readFile ../config/zed/settings.json;
         force = true;

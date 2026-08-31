@@ -1,0 +1,105 @@
+[language-server.nil]
+command = "nil"
+
+[language-server.gopls]
+command = "gopls"
+
+[language-server.bash-language-server]
+command = "bash-language-server"
+args = ["start"]
+
+[language-server.taplo]
+command = "taplo"
+args = ["lsp", "stdio"]
+
+[language-server.marksman]
+command = "marksman"
+args = ["server"]
+
+[language-server.typescript-language-server]
+command = "typescript-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-json]
+command = "vscode-json-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-html]
+command = "vscode-html-language-server"
+args = ["--stdio"]
+
+[language-server.vscode-css]
+command = "vscode-css-language-server"
+args = ["--stdio"]
+
+[[language]]
+name = "nix"
+language-servers = ["nil"]
+auto-format = true
+formatter = { command = "nixfmt" }
+
+[[language]]
+name = "go"
+language-servers = ["gopls"]
+auto-format = true
+formatter = { command = "gofmt" }
+
+[[language]]
+name = "bash"
+language-servers = ["bash-language-server"]
+auto-format = true
+formatter = { command = "shfmt", args = ["-i", "2", "-ci"] }
+
+[[language]]
+name = "toml"
+language-servers = ["taplo"]
+auto-format = true
+formatter = { command = "taplo", args = ["format", "-"] }
+
+[[language]]
+name = "markdown"
+language-servers = ["marksman"]
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "markdown"] }
+
+[[language]]
+name = "json"
+language-servers = ["vscode-json"]
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "json"] }
+
+[[language]]
+name = "javascript"
+language-servers = ["typescript-language-server"]
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+
+[[language]]
+name = "typescript"
+language-servers = ["typescript-language-server"]
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+
+[[language]]
+name = "jsx"
+language-servers = ["typescript-language-server"]
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "babel"] }
+
+[[language]]
+name = "tsx"
+language-servers = ["typescript-language-server"]
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "typescript"] }
+
+[[language]]
+name = "html"
+language-servers = ["vscode-html"]
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "html"] }
+
+[[language]]
+name = "css"
+language-servers = ["vscode-css"]
+auto-format = true
+formatter = { command = "prettier", args = ["--parser", "css"] }
