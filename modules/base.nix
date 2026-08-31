@@ -12,6 +12,14 @@
       # lang / versioning (runtime versions: see programs.mise)
       nixfmt
       nil
+      gopls
+      shfmt
+      taplo
+      marksman
+      bash-language-server
+      typescript-language-server
+      vscode-langservers-extracted
+      prettier
 
       # cli tools
       eza
