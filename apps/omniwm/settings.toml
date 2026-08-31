@@ -2,6 +2,7 @@ monitorBarOverrides = []
 monitorDwindleOverrides = []
 monitorOrientationOverrides = []
 monitorRoutingOverrides = []
+schemaVersion = 1
 
 [appearance]
 mode = "dark"
@@ -37,8 +38,10 @@ followsWindowToMonitor = false
 lockModifier = "off"
 moveCrossesMonitorAtEdge = false
 moveMouseToFocusedWindow = false
+raiseOnMouseFocus = true
 
 [gaps]
+fullscreenUsesOuterGaps = false
 size = 15.0
 
 [gaps.outer]
@@ -132,6 +135,10 @@ widthPercent = 50.0
 [routing]
 mode = "macOS"
 
+[scratchpads]
+
+[scratchpads.labels]
+
 [statusBar]
 showAppNames = true
 showWorkspaceName = true
@@ -144,6 +151,7 @@ enabled = true
 excludedBundleIDs = []
 height = 24.0
 hideEmptyWorkspaces = false
+hideInNativeFullscreen = false
 notchActiveZoneWidth = 180.0
 notchMode = "moveBelowMenuBar"
 position = "overlappingMenuBar"
@@ -265,43 +273,123 @@ bundleId = "net.whatsapp.WhatsApp"
 id = "B70241AB-0B9B-4CBF-A5C3-6FD85DD37AFA"
 
 [[hotkeys]]
-binding = "Hyper+1"
+binding = "Unassigned"
+id = "toggleScratchpad.1"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "assignFocusedWindowToScratchpad.1"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "toggleScratchpad.2"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "assignFocusedWindowToScratchpad.2"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "toggleScratchpad.3"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "assignFocusedWindowToScratchpad.3"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "toggleScratchpad.4"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "assignFocusedWindowToScratchpad.4"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "toggleScratchpad.5"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "assignFocusedWindowToScratchpad.5"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "toggleScratchpad.6"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "assignFocusedWindowToScratchpad.6"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "toggleScratchpad.7"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "assignFocusedWindowToScratchpad.7"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "toggleScratchpad.8"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "assignFocusedWindowToScratchpad.8"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "toggleScratchpad.9"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "assignFocusedWindowToScratchpad.9"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "toggleScratchpad.10"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "assignFocusedWindowToScratchpad.10"
+
+[[hotkeys]]
+binding = "Control+Option+Command+1"
 id = "switchWorkspace.0"
 
 [[hotkeys]]
-binding = "Hyper+Shift+1"
+binding = "Hyper+1"
 id = "moveToWorkspace.0"
 
 [[hotkeys]]
-binding = "Hyper+2"
+binding = "Control+Option+Command+2"
 id = "switchWorkspace.1"
 
 [[hotkeys]]
-binding = "Hyper+Shift+2"
+binding = "Hyper+2"
 id = "moveToWorkspace.1"
 
 [[hotkeys]]
-binding = "Hyper+3"
+binding = "Control+Option+Command+3"
 id = "switchWorkspace.2"
 
 [[hotkeys]]
-binding = "Hyper+Shift+3"
+binding = "Hyper+3"
 id = "moveToWorkspace.2"
 
 [[hotkeys]]
-binding = "Hyper+4"
+binding = "Control+Option+Command+4"
 id = "switchWorkspace.3"
 
 [[hotkeys]]
-binding = "Hyper+Shift+4"
+binding = "Hyper+4"
 id = "moveToWorkspace.3"
 
 [[hotkeys]]
-binding = "Hyper+5"
+binding = "Control+Option+Command+5"
 id = "switchWorkspace.4"
 
 [[hotkeys]]
-binding = "Hyper+Shift+5"
+binding = "Hyper+5"
 id = "moveToWorkspace.4"
 
 [[hotkeys]]
@@ -337,31 +425,31 @@ binding = "Unassigned"
 id = "moveToWorkspace.8"
 
 [[hotkeys]]
-binding = "Hyper+Tab"
+binding = "Control+Option+Command+Tab"
 id = "workspaceBackAndForth"
 
 [[hotkeys]]
-binding = "Hyper+Right Bracket"
+binding = "Control+Option+Command+Right Bracket"
 id = "switchWorkspace.next"
 
 [[hotkeys]]
-binding = "Hyper+Left Bracket"
+binding = "Control+Option+Command+Left Bracket"
 id = "switchWorkspace.previous"
 
 [[hotkeys]]
-binding = "Hyper+H"
+binding = "Control+Option+Command+H"
 id = "focus.left"
 
 [[hotkeys]]
-binding = "Hyper+J"
+binding = "Control+Option+Command+J"
 id = "focus.down"
 
 [[hotkeys]]
-binding = "Hyper+K"
+binding = "Control+Option+Command+K"
 id = "focus.up"
 
 [[hotkeys]]
-binding = "Hyper+L"
+binding = "Control+Option+Command+L"
 id = "focus.right"
 
 [[hotkeys]]
@@ -461,19 +549,19 @@ binding = "Unassigned"
 id = "moveColumnToWorkspace.8"
 
 [[hotkeys]]
-binding = "Hyper+Shift+H"
+binding = "Hyper+H"
 id = "move.left"
 
 [[hotkeys]]
-binding = "Hyper+Shift+J"
+binding = "Hyper+J"
 id = "move.down"
 
 [[hotkeys]]
-binding = "Hyper+Shift+K"
+binding = "Hyper+K"
 id = "move.up"
 
 [[hotkeys]]
-binding = "Hyper+Shift+L"
+binding = "Hyper+L"
 id = "move.right"
 
 [[hotkeys]]
@@ -501,11 +589,11 @@ binding = "Unassigned"
 id = "expelWindowFromColumn"
 
 [[hotkeys]]
-binding = "Hyper+N"
+binding = "Control+Option+Command+N"
 id = "focusMonitorNext"
 
 [[hotkeys]]
-binding = "Hyper+P"
+binding = "Control+Option+Command+P"
 id = "focusMonitorPrevious"
 
 [[hotkeys]]
@@ -545,7 +633,7 @@ binding = "Unassigned"
 id = "moveWindowToMonitor.down"
 
 [[hotkeys]]
-binding = "Hyper+F"
+binding = "Control+Option+Command+F"
 id = "toggleFullscreen"
 
 [[hotkeys]]
@@ -817,7 +905,7 @@ binding = "Unassigned"
 id = "preselectClear"
 
 [[hotkeys]]
-binding = "Hyper+Space"
+binding = "Control+Option+Command+Space"
 id = "openCommandPalette"
 
 [[hotkeys]]
@@ -829,16 +917,8 @@ binding = "Unassigned"
 id = "rescueOffscreenWindows"
 
 [[hotkeys]]
-binding = "Hyper+G"
+binding = "Control+Option+Command+G"
 id = "toggleFocusedWindowFloating"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "assignFocusedWindowToScratchpad"
-
-[[hotkeys]]
-binding = "Unassigned"
-id = "toggleScratchpadWindow"
 
 [[hotkeys]]
 binding = "Control+Option+M"
@@ -853,7 +933,7 @@ binding = "Unassigned"
 id = "toggleHiddenBarPanel"
 
 [[hotkeys]]
-binding = "Hyper+Grave"
+binding = "Control+Option+Command+Grave"
 id = "toggleQuakeTerminal"
 
 [[hotkeys]]
@@ -861,7 +941,7 @@ binding = "Option+Shift+L"
 id = "toggleWorkspaceLayout"
 
 [[hotkeys]]
-binding = "Hyper+O"
+binding = "Control+Option+Command+O"
 id = "toggleOverview"
 
 [[hotkeys]]
@@ -887,45 +967,45 @@ singleWindowFit = "container_primary_span"
 visibleContainerCount = 1
 
 [[workspaces]]
+displayName = "💻"
 id = "AD36F001-C57E-41A5-AC1D-DF5249D007F0"
 layoutType = "niri"
-displayName = "💻"
 name = "1"
 
 [workspaces.monitorAssignment]
 type = "secondary"
 
 [[workspaces]]
+displayName = "🌐"
 id = "454CECD4-5E9D-4ED1-95D7-979D48817F5F"
 layoutType = "niri"
-displayName = "🌐"
 name = "2"
 
 [workspaces.monitorAssignment]
 type = "secondary"
 
 [[workspaces]]
+displayName = "💬"
 id = "BEB842B5-E894-4791-9FD1-397C3CDD3538"
 layoutType = "niri"
-displayName = "💬"
 name = "3"
 
 [workspaces.monitorAssignment]
 type = "secondary"
 
 [[workspaces]]
+displayName = "⌨️"
 id = "248AA883-2261-4D45-943C-79C0E46A232B"
 layoutType = "niri"
-displayName = "⌨️"
 name = "4"
 
 [workspaces.monitorAssignment]
 type = "main"
 
 [[workspaces]]
+displayName = "📎"
 id = "8B8C45D6-CE9E-41D9-BD50-BE4989D5E3DE"
 layoutType = "niri"
-displayName = "📎"
 name = "5"
 
 [workspaces.monitorAssignment]
