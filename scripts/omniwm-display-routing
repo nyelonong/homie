@@ -1,0 +1,79 @@
+#!/bin/sh
+# Route OmniWM workspaces after display changes. OmniWM exposes runtime display names,
+# not EDID UUIDs, through omniwmctl, so these are exact names reported by the app.
+set -eu
+
+omniwmctl="${OMNIWMCTL:-/Applications/OmniWM.app/Contents/MacOS/omniwmctl}"
+h27g30q_name="H27G30Q"
+s24r35x_name="S24R35x"
+
+displays="$($omniwmctl query displays --format tsv 2>/dev/null)" || exit 0
+
+frame_for_display() {
+  printf '%s\n' "$displays" | awk -F '\t' -v name="$1" 'NR > 1 && $2 == name { print $7; exit }'
+}
+
+built_in_name="Built-in Retina Display"
+
+h27g30q_frame="$(frame_for_display "$h27g30q_name")"
+s24r35x_frame="$(frame_for_display "$s24r35x_name")"
+
+# H27G30Q wins predictably if both are present, although the intended setup has only
+# one external display connected at a time.
+if [ -n "$h27g30q_frame" ]; then
+  target_for_1="$h27g30q_name"
+  target_for_2="$built_in_name"
+  target_for_3="$built_in_name"
+elif [ -n "$s24r35x_frame" ]; then
+  target_for_1="$s24r35x_name"
+  target_for_2="$s24r35x_name"
+  target_for_3="$s24r35x_name"
+else
+  # With no recognized external display, OmniWM's native secondary/main assignments
+  # retain the laptop-only fallback without any forced runtime overrides.
+  exit 0
+fi
+
+move_workspace_if_needed() {
+  workspace="$1"
+  target_name="$2"
+  current_name="$(
+    "$omniwmctl" query workspaces --workspace "$workspace" --format tsv 2>/dev/null |
+      awk -F '\t' 'NR > 1 { print $3; exit }'
+  )"
+
+  [ -n "$current_name" ] && [ "$current_name" != "$target_name" ] || return 0
+
+  current_frame="$(frame_for_display "$current_name")"
+  target_frame="$(frame_for_display "$target_name")"
+  [ -n "$current_frame" ] && [ -n "$target_frame" ] || return 0
+
+  direction="$(awk -v current="$current_frame" -v target="$target_frame" '
+    function center(frame, output, pieces, position, size) {
+      split(frame, pieces, " ")
+      split(pieces[1], position, ",")
+      split(pieces[2], size, "x")
+      output[1] = position[1] + size[1] / 2
+      output[2] = position[2] + size[2] / 2
+    }
+    BEGIN {
+      center(current, currentCenter)
+      center(target, targetCenter)
+      dx = targetCenter[1] - currentCenter[1]
+      dy = targetCenter[2] - currentCenter[2]
+      if ((dx < 0 ? -dx : dx) >= (dy < 0 ? -dy : dy)) {
+        if (dx >= 0) print "right"
+        else print "left"
+      } else {
+        if (dy >= 0) print "up"
+        else print "down"
+      }
+    }
+  ' )"
+
+  "$omniwmctl" workspace move-to-monitor "$workspace" "$direction" --force >/dev/null 2>&1 || true
+}
+
+move_workspace_if_needed 1 "$target_for_1"
+move_workspace_if_needed 2 "$target_for_2"
+move_workspace_if_needed 3 "$target_for_3"

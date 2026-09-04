@@ -101,6 +101,21 @@ OmniWM owns and rewrites its live settings file. `make omniwm-deploy` stops Omni
 pushes the repository seed, and restarts it; `make omniwm-harvest` pulls GUI changes
 back for review before committing.
 
+### OmniWM display routing
+
+The seed keeps workspaces 1–3 assigned to OmniWM's native `secondary` display and
+workspaces 4–5 assigned to `main`, preserving the laptop-only fallback. The personal
+profile's `omniwmDisplayRouting` launchd agent subscribes to OmniWM display changes
+and applies the monitor-specific exception: on `H27G30Q`, workspace 1 stays external
+while 2–3 move to the built-in display; on `S24R35x`, 1–3 stay external. If both are
+present despite the intended one-external-display setup, `H27G30Q` takes precedence.
+
+`Cekat Office` is the human alias for the real OmniWM runtime name `H27G30Q` (macOS
+EDID UUID `4D791000-0000-0000-0F22-0103803C2278`). `Home` is the alias for
+`S24R35x` (macOS display UUID `102BC733-3758-43B3-9BEF-A9C3AB50AA41`). OmniWM's
+CLI exposes those real runtime names, not an EDID-name rename facility, so the routing
+script matches `H27G30Q` and `S24R35x` exactly; the aliases are documentation only.
+
 ## Layout
 
 ```text

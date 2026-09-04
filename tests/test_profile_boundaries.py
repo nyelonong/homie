@@ -38,6 +38,7 @@ class ProfileBoundaryTest(unittest.TestCase):
     def test_desktop_lifecycle_belongs_only_to_personal_profile(self) -> None:
         boundaries = (
             ("launchd.agents", "skhd"),
+            ("launchd.agents", "omniwmDisplayRouting"),
             ("home.activation", "seedOmniWM"),
             ("home.activation", "reloadSkhd"),
             ("home.file", ".skhdrc"),

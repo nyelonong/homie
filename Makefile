@@ -19,8 +19,8 @@ fmt: validate-omniwm ## Format all Nix files and validate OmniWM settings
 validate-omniwm:
 	python3 scripts/validate-omniwm.py
 
-test-omniwm: ## Test OmniWM seed and deployment behavior
-	python3 -B -m unittest -v tests/test_omniwm_deployment.py
+test-omniwm: ## Test OmniWM seed, deployment, and display routing behavior
+	python3 -B -m unittest -v tests/test_omniwm_deployment.py tests/test_omniwm_display_routing.py
 
 test-profiles: ## Test profile ownership boundaries
 	python3 -B -m unittest -v tests/test_profile_boundaries.py

@@ -3,6 +3,11 @@
   lib,
   ...
 }:
+let
+  omniwmDisplayRouting = pkgs.writeShellScript "omniwm-display-routing" (
+    builtins.readFile ../scripts/omniwm-display-routing
+  );
+in
 {
   home = {
     packages = lib.optionals pkgs.stdenv.isDarwin [ pkgs.skhd ];
@@ -17,6 +22,23 @@
       enable = true;
       config = {
         ProgramArguments = [ "${pkgs.skhd}/bin/skhd" ];
+        KeepAlive = true;
+        RunAtLoad = true;
+      };
+    };
+
+    # OmniWM only supports static workspace monitor assignments. Its display-change
+    # subscription lets this handler apply the one monitor-specific exception.
+    omniwmDisplayRouting = {
+      enable = true;
+      config = {
+        ProgramArguments = [
+          "/Applications/OmniWM.app/Contents/MacOS/omniwmctl"
+          "watch"
+          "display-changed"
+          "--exec"
+          "${omniwmDisplayRouting}"
+        ];
         KeepAlive = true;
         RunAtLoad = true;
       };
