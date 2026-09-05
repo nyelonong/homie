@@ -272,6 +272,11 @@ assignToWorkspace = "3"
 bundleId = "net.whatsapp.WhatsApp"
 id = "B70241AB-0B9B-4CBF-A5C3-6FD85DD37AFA"
 
+[[appRules]]
+assignToWorkspace = "1"
+bundleId = "dev.rdg.Rdg"
+id = "1FC6955C-5DD6-4541-9BBE-7DDB89E6D253"
+
 [[hotkeys]]
 binding = "Unassigned"
 id = "toggleScratchpad.1"
