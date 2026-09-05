@@ -23,6 +23,11 @@
 
       # cli tools
       eza
+      # Only coreutils' timeout: the full package would shadow BSD ls/date/stat.
+      (runCommand "coreutils-timeout" { } ''
+        mkdir -p $out/bin
+        ln -s ${coreutils}/bin/timeout $out/bin/timeout
+      '')
       bat
       fd
       ripgrep
