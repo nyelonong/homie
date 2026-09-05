@@ -9,14 +9,16 @@ let
       {
         agent_servers.pi-acp = {
           default_config_options = {
-            model = "litellm/azure_ai/gpt-5.6-terra";
-            thought_level = "high";
+            model = "litellm/azure_ai/gpt-5.6-luna";
+            thought_level = "medium";
           };
           type = "registry";
         };
       };
 in
 {
+  programs.zsh.shellAliases.pi-cekat = "PI_CODING_AGENT_DIR=$HOME/.pi/agent-cekat pi";
+
   home.username = "zaki";
   home.homeDirectory = "/Users/zaki";
 

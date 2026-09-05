@@ -72,7 +72,7 @@ class ProfileBoundaryTest(unittest.TestCase):
                         'home.file.".config/zed/settings.json".text',
                     )
                 )
-                self.assertNotIn("litellm/azure_ai/gpt-5.6-terra", json.dumps(settings))
+                self.assertNotIn("litellm/azure_ai/gpt-5.6-luna", json.dumps(settings))
 
         cekat_settings = json.loads(
             self.config_text(
@@ -81,7 +81,7 @@ class ProfileBoundaryTest(unittest.TestCase):
             )
         )
         model = cekat_settings["agent_servers"]["pi-acp"]["default_config_options"]["model"]
-        self.assertEqual(model, "litellm/azure_ai/gpt-5.6-terra")
+        self.assertEqual(model, "litellm/azure_ai/gpt-5.6-luna")
 
 
 if __name__ == "__main__":
