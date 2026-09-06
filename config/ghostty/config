@@ -1,0 +1,20 @@
+# Ghostty. Deployed to ~/.config/ghostty/config by home-manager; the old
+# Application Support copy was retired when this file took over.
+
+font-family = Hack Nerd Font Mono
+font-family = FiraCode Nerd Font Mono
+font-family-bold = Hack Nerd Font Mono Bold
+font-family-bold = FiraCode Nerd Font Mono Bold
+font-family-bold-italic = Hack Nerd Font Mono Bold Italic
+font-family-italic = Hack Nerd Font Mono Italic
+font-size = 17
+
+bell-features = system,audio,border
+notify-on-command-finish = unfocused
+quick-terminal-position = center
+window-subtitle = working-directory
+macos-option-as-alt = true
+
+# Translucent window with a blurred backdrop.
+background-opacity = 0.88
+background-blur = 20
