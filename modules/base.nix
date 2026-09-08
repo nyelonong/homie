@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 {
   home = {
     stateVersion = "26.05";
@@ -69,10 +74,6 @@
         source = ../config/helix/languages.toml;
         force = true;
       };
-      ".config/zed/settings.json" = {
-        text = builtins.readFile ../config/zed/settings.json;
-        force = true;
-      };
       ".config/zed/keymap.json" = {
         text = builtins.readFile ../config/zed/keymap.json;
         force = true;
@@ -82,6 +83,17 @@
       };
     };
   };
+
+  home.activation.seedZed = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    live="$HOME/.config/zed/settings.json"
+    if [ -L "$live" ]; then
+      rm "$live"
+    fi
+    if [ ! -f "$live" ]; then
+      mkdir -p "$(dirname "$live")"
+      install -m 0644 "${../apps/zed/settings.json}" "$live"
+    fi
+  '';
 
   xdg.enable = true;
   fonts.fontconfig.enable = true;

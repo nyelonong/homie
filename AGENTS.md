@@ -53,9 +53,9 @@ The configuration has four layers:
 ### Things worth knowing before editing
 
 - **Three package sources coexist by design.** Nix owns CLI tools; mise owns language runtimes; Brew owns macOS GUI applications and anything not suited to Nix. Do not move language runtimes into `home.packages` or CLI tools into Brew.
-- **`config/` follows target paths.** `config/starship.toml` is intentionally flat because its target is `~/.config/starship.toml`; Helix and Zed use nested target directories. Do not create one folder per application without regard to the deployed path.
-- **Zed's shared file must remain strict JSON.** `hosts/cekat.nix` parses `config/zed/settings.json` with `builtins.fromJSON` before adding the work-only model. JSON comments and trailing commas break every profile evaluation.
-- **New static config needs an explicit mapping.** `modules/base.nix` no longer recursively links all of `config/`, allowing profile-specific overrides such as Zed's work model.
+- **`config/` follows target paths.** `config/starship.toml` is intentionally flat because its target is `~/.config/starship.toml`; Helix and Zed keymap use nested target directories. App-owned settings such as OmniWM and Zed live under `apps/`.
+- **Zed's seed files must remain strict JSON.** `hosts/cekat.nix` parses `apps/zed/settings.json` and `apps/zed/cekat-overlay.json` with `builtins.fromJSON`. JSON comments and trailing commas break every profile evaluation.
+- **New static config needs an explicit mapping.** `modules/base.nix` no longer recursively links all of `config/`, allowing profile-specific overrides. App-owned settings are seeded by activation and remain writable by the app.
 - **App-owned settings use seeds.** Graduate a tool from `config/` to `apps/<tool>/` when it replaces a symlink or must rewrite its settings. Add explicit deploy/harvest behavior rather than making the live file read-only.
 - **Runtime pins live in `modules/runtimes.nix`.** After changing one, run `make switch` and `mise install`. Projects may still override pins with `mise.toml` or `.tool-versions`.
 - **`NIXPKGS_ALLOW_UNFREE=1`**, `GOPATH`, `GOBIN`, and the mise shim fallback live in `modules/base.nix`. The shim path is required by non-interactive shells, editors, hooks, and launchd.

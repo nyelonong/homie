@@ -63,25 +63,26 @@ class ProfileBoundaryTest(unittest.TestCase):
                 self.assertNotIn("function pi-openrouter()", init)
                 self.assertNotIn("CMUX_BUNDLED_CLI_PATH", init)
 
-    def test_cekat_zed_model_belongs_only_to_work_profile(self) -> None:
-        for profile in ("zaki", "zaki@windows"):
+    def test_zed_settings_are_app_owned_and_work_seed_is_profile_specific(self) -> None:
+        for profile in ("zaki", "zaki@cekat", "zaki@windows"):
             with self.subTest(profile=profile):
-                settings = json.loads(
-                    self.config_text(
+                self.assertTrue(self.config_has(profile, "home.activation", "seedZed"))
+                self.assertFalse(
+                    self.config_has(
                         profile,
-                        'home.file.".config/zed/settings.json".text',
+                        "home.file",
+                        ".config/zed/settings.json",
                     )
                 )
-                self.assertNotIn("litellm/azure_ai/gpt-5.6-luna", json.dumps(settings))
 
-        cekat_settings = json.loads(
-            self.config_text(
-                "zaki@cekat",
-                'home.file.".config/zed/settings.json".text',
-            )
+        self.assertTrue(
+            self.config_has("zaki@cekat", "home.activation", "seedCekatZed")
         )
-        model = cekat_settings["agent_servers"]["pi-acp"]["default_config_options"]["model"]
-        self.assertEqual(model, "litellm/azure_ai/gpt-5.6-luna")
+        for profile in ("zaki", "zaki@windows"):
+            with self.subTest(profile=profile):
+                self.assertFalse(
+                    self.config_has(profile, "home.activation", "seedCekatZed")
+                )
 
 
 if __name__ == "__main__":

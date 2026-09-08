@@ -61,9 +61,9 @@ The personal profile explicitly imports the skhd and OmniWM desktop lifecycle; o
 system detection alone does not select personal desktop behavior. The flake also exposes
 locked Home Manager and mise apps used by bootstrap and the Make targets.
 
-`config/` mirrors paths below `~/.config`. This is why `config/starship.toml` is flat:
-Starship reads `~/.config/starship.toml`, while Helix and Zed read files inside their own
-directories.
+`config/` mirrors static paths below `~/.config`. This is why `config/starship.toml` is
+flat: Starship reads `~/.config/starship.toml`, while Helix and Zed keymap read files
+inside their own directories. App-owned settings seeds live under `apps/`.
 
 ## Fresh machine
 
@@ -92,8 +92,8 @@ Afterwards, restart the shell.
 ```sh
 make switch    # apply config through the locked Home Manager (PROFILE=zaki default)
 make update    # bump flake inputs, then apply
-make fmt       # format every Nix file and validate OmniWM settings
-make check     # run format, shell, bootstrap, profile-boundary, and OmniWM checks
+make fmt       # format every Nix file and validate app settings
+make check     # run format, shell, bootstrap, profile-boundary, and app checks
 make help      # list all targets
 ```
 
@@ -116,6 +116,19 @@ EDID UUID `4D791000-0000-0000-0F22-0103803C2278`). `Home` is the alias for
 CLI exposes those real runtime names, not an EDID-name rename facility, so the routing
 script matches `H27G30Q` and `S24R35x` exactly; the aliases are documentation only.
 
+Zed owns and rewrites its live settings file. `make switch` seeds a missing file or
+replaces the old Home Manager symlink, then preserves later edits made in Zed. Use the
+matching profile explicitly when synchronizing seeds:
+
+```sh
+PROFILE=zaki make zed-harvest
+PROFILE=zaki@cekat make zed-harvest
+PROFILE=zaki@cekat make zed-deploy
+```
+
+Cekat's `agent_servers.pi-acp` settings stay in the work-only overlay and are rejected
+from non-Cekat harvests.
+
 ## Layout
 
 ```text
@@ -128,8 +141,9 @@ modules/darwin-desktop.nix
                      personal skhd service and OmniWM activation lifecycle
 hosts/               active per-machine identity, packages, and overrides
 history/hosts/       inactive former-employer configuration records
-config/              mirrors ~/.config (starship, helix, Zed)
+config/              mirrors ~/.config (starship, helix, Zed keymap)
 apps/omniwm/         seed for app-owned writable settings
+apps/zed/            seeds for app-owned writable settings and the Cekat overlay
 scripts/, tests/     validation and behavior regressions
 .gitconfig           → ~/.gitconfig
 .skhdrc              → ~/.skhdrc for the personal profile

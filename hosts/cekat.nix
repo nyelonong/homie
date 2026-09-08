@@ -4,17 +4,10 @@
   ...
 }:
 let
-  zedSettings =
-    lib.recursiveUpdate (builtins.fromJSON (builtins.readFile ../config/zed/settings.json))
-      {
-        agent_servers.pi-acp = {
-          default_config_options = {
-            model = "litellm/azure_ai/gpt-5.6-luna";
-            thought_level = "medium";
-          };
-          type = "registry";
-        };
-      };
+  zedSettings = lib.recursiveUpdate (builtins.fromJSON (builtins.readFile ../apps/zed/settings.json)) (
+    builtins.fromJSON (builtins.readFile ../apps/zed/cekat-overlay.json)
+  );
+  zedCekatSeed = builtins.toFile "zed-cekat-settings.json" (builtins.toJSON zedSettings);
 in
 {
   programs.zsh.shellAliases.pi-cekat = "PI_CODING_AGENT_DIR=$HOME/.pi/agent-cekat pi";
@@ -35,6 +28,14 @@ in
     GONOSUMDB = "github.com/cekataiofficial/*";
   };
 
-  home.file.".config/zed/settings.json".text = lib.mkForce (builtins.toJSON zedSettings);
-
+  home.activation.seedCekatZed = lib.hm.dag.entryBetween [ "seedZed" ] [ "writeBoundary" ] ''
+    live="$HOME/.config/zed/settings.json"
+    if [ -L "$live" ]; then
+      rm "$live"
+    fi
+    if [ ! -f "$live" ]; then
+      mkdir -p "$(dirname "$live")"
+      install -m 0644 "${zedCekatSeed}" "$live"
+    fi
+  '';
 }
