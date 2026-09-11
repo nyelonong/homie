@@ -18,12 +18,12 @@ disabled = false
 
 # Shows current directory
 [directory]
-truncation_length = 3
+truncation_length = -1
 truncation_symbol = "…/"
 home_symbol = " ~"
 read_only_style = "197"
 read_only = "  "
-truncate_to_repo = true
+truncate_to_repo = false
 format = "[$path]($style)[$read_only]($read_only_style) "
 
 [git_branch]
