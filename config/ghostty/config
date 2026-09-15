@@ -7,7 +7,7 @@ font-family-bold = Hack Nerd Font Mono Bold
 font-family-bold = FiraCode Nerd Font Mono Bold
 font-family-bold-italic = Hack Nerd Font Mono Bold Italic
 font-family-italic = Hack Nerd Font Mono Italic
-font-size = 17
+font-size = 20
 
 # Keep the terminal palette aligned with the Zed "One Dark" / "One Light" pair.
 theme = light:Atom One Light,dark:Atom One Dark
