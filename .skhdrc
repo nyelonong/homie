@@ -12,4 +12,7 @@ cmd + alt - s : open -a Slack; /opt/homebrew/bin/omniwmctl command switch-worksp
 cmd + alt - m : open -a Telegram; /opt/homebrew/bin/omniwmctl command switch-workspace 3
 cmd + alt - w : open -a WhatsApp; /opt/homebrew/bin/omniwmctl command switch-workspace 3
 
-# window management bindings arrive with the WM decision (OmniWM vs AeroSpace)
+cmd + alt + shift - left  : workspace=$(/opt/homebrew/bin/omniwmctl query active-workspace --format json | /usr/bin/jq -r '.result.payload.workspace.rawName // empty'); test -z "$workspace" || /opt/homebrew/bin/omniwmctl workspace move-to-monitor "$workspace" left --force
+cmd + alt + shift - right : workspace=$(/opt/homebrew/bin/omniwmctl query active-workspace --format json | /usr/bin/jq -r '.result.payload.workspace.rawName // empty'); test -z "$workspace" || /opt/homebrew/bin/omniwmctl workspace move-to-monitor "$workspace" right --force
+cmd + alt + shift - up    : workspace=$(/opt/homebrew/bin/omniwmctl query active-workspace --format json | /usr/bin/jq -r '.result.payload.workspace.rawName // empty'); test -z "$workspace" || /opt/homebrew/bin/omniwmctl workspace move-to-monitor "$workspace" up --force
+cmd + alt + shift - down  : workspace=$(/opt/homebrew/bin/omniwmctl query active-workspace --format json | /usr/bin/jq -r '.result.payload.workspace.rawName // empty'); test -z "$workspace" || /opt/homebrew/bin/omniwmctl workspace move-to-monitor "$workspace" down --force
