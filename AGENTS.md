@@ -16,6 +16,10 @@ make switch                     # PROFILE=zaki default
 make omniwm-deploy              # stop app, push seed → live file, restart
 make omniwm-harvest             # pull live file → seed for review
 
+# Ghostty: the live config file is app-owned, not a symlink
+make ghostty-deploy             # push seed → live config
+make ghostty-harvest            # pull live config → seed for review
+
 # Update locked inputs and apply
 make update
 
@@ -40,7 +44,7 @@ The configuration has four layers:
    - **`modules/runtimes.nix`** owns direnv, mise integration, and global runtime pins.
    - **`modules/shell.nix`** owns shared Zsh aliases, generic Pi provider wrappers, zoxide, fzf, and Starship.
    - **`modules/skhd.nix`** owns skhd, `~/.skhdrc`, its launchd agent, and reload activation for Darwin profiles.
-   - **`modules/ghostty.nix`** owns the Ghostty config mapping for Darwin profiles.
+   - **`modules/ghostty.nix`** owns the Ghostty seed and the app-owned live config for Darwin profiles.
    - **`modules/omniwm.nix`** owns the OmniWM settings seed and display-routing agent for Darwin profiles.
 
 3. **`hosts/`** contains active profile ownership:
@@ -49,7 +53,7 @@ The configuration has four layers:
    - `windows.nix` owns WSL identity and home paths.
    Darwin-only behavior shared by both macOS profiles is gated by `pkgs.stdenv.isDarwin`.
 
-4. **Configuration sources are separated by writer ownership.** `config/` mirrors paths below `~/.config`; `.gitconfig` and `.skhdrc` mirror files directly below `$HOME`. Home Manager deploys these as read-only store files. `apps/omniwm/settings.toml` is a seed because OmniWM rewrites its live settings; the live file remains writable and app-owned.
+4. **Configuration sources are separated by writer ownership.** `config/` mirrors paths below `~/.config`; `.gitconfig` and `.skhdrc` mirror files directly below `$HOME`. Home Manager deploys these as read-only store files. `apps/omniwm/settings.toml` and `apps/ghostty/config` are seeds because their live files remain writable and app-owned.
 
 `history/hosts/` contains inactive ByteDance and Tokopedia records. They preserve former-employer history and must not be imported into `flake.nix` or presented as supported profiles.
 
@@ -59,7 +63,7 @@ The configuration has four layers:
 - **`config/` follows target paths.** `config/starship.toml` is intentionally flat because its target is `~/.config/starship.toml`; Helix and Zed keymap use nested target directories. App-owned settings such as OmniWM and Zed live under `apps/`.
 - **Zed's seed files must remain strict JSON.** `hosts/cekat.nix` parses `apps/zed/settings.json` and `apps/zed/cekat-overlay.json` with `builtins.fromJSON`. JSON comments and trailing commas break every profile evaluation.
 - **New static config needs an explicit mapping.** `modules/base.nix` no longer recursively links all of `config/`, allowing profile-specific overrides. App-owned settings are seeded by activation and remain writable by the app.
-- **App-owned settings use seeds.** Graduate a tool from `config/` to `apps/<tool>/` when it replaces a symlink or must rewrite its settings. Add explicit deploy/harvest behavior rather than making the live file read-only.
+- **App-owned settings use seeds.** Graduate a tool from `config/` to `apps/<tool>/` when its live file must stay writable instead of a read-only symlink. Add explicit deploy/harvest behavior rather than making the live file read-only.
 - **Runtime pins live in `modules/runtimes.nix`.** After changing one, run `make switch` and `mise install`. Projects may still override pins with `mise.toml` or `.tool-versions`.
 - **`NIXPKGS_ALLOW_UNFREE=1`**, `GOPATH`, `GOBIN`, and the mise shim fallback live in `modules/base.nix`. The shim path is required by non-interactive shells, editors, hooks, and launchd.
 - **Shell aliases live in `modules/shell.nix`.** They depend on their corresponding packages in `modules/base.nix`.

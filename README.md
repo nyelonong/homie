@@ -131,6 +131,10 @@ PROFILE=zaki@cekat make zed-deploy
 Cekat's `agent_servers.pi-acp` settings stay in the work-only overlay and are rejected
 from non-Cekat harvests.
 
+Ghostty's live config is app-owned too. Edit `~/.config/ghostty/config` and reload with
+`Cmd+Shift+,`; `make ghostty-harvest` pulls those edits back into the repository seed for
+review, and `make ghostty-deploy` pushes the seed into the live config.
+
 ## Layout
 
 ```text
@@ -145,6 +149,7 @@ modules/omniwm.nix   shared Darwin OmniWM seed and display routing
 hosts/               active per-machine identity, packages, and overrides
 history/hosts/       inactive former-employer configuration records
 config/              mirrors ~/.config (starship, helix, Zed keymap)
+apps/ghostty/        seed for the app-owned writable Ghostty config
 apps/omniwm/         seed for app-owned writable settings
 apps/zed/            seeds for app-owned writable settings and the Cekat overlay
 scripts/, tests/     validation and behavior regressions
@@ -156,8 +161,9 @@ bootstrap.sh         validated fresh-machine and rerun setup
 ## Rules of the house
 
 - **Edit files in this repository, not in `~`.** Managed files are read-only store
-  symlinks and are replaced on `make switch`. `~/.zshrc.local` is the ignored escape hatch
-  for unshared machine-specific shell additions.
+  symlinks and are replaced on `make switch`; app-owned settings in `apps/` are edited live
+  and synchronized through their deploy and harvest targets. `~/.zshrc.local` is the ignored
+  escape hatch for unshared machine-specific shell additions.
 - **New CLI tools go in `modules/base.nix`, not Brew.** Language runtimes are the exception:
   mise owns their pins in `modules/runtimes.nix`, preserving per-project overrides through
   `mise.toml` or `.tool-versions`.
@@ -165,6 +171,6 @@ bootstrap.sh         validated fresh-machine and rerun setup
   corresponding `home.file` mapping in `modules/base.nix` for each new managed file.
 - **Brew owns macOS GUI applications and anything not suited to Nix.** Nix may still own
   their service or deployment configuration.
-- **Apps that rewrite their settings live in `apps/`, not `config/`.** Their live file stays
-  writable and app-owned; the repository copy is a seed managed through explicit deploy and
-  harvest commands.
+- **Apps whose live settings stay writable live in `apps/`, not `config/`.** Their live
+  file stays writable and app-owned; the repository copy is a seed managed through explicit
+  deploy and harvest commands.

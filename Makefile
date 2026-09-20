@@ -1,6 +1,6 @@
 .PHONY: install switch update fmt check show clean help
 .PHONY: omniwm-deploy omniwm-harvest validate-omniwm test-omniwm test-profiles test-bootstrap
-.PHONY: zed-deploy zed-harvest validate-zed test-zed
+.PHONY: ghostty-deploy ghostty-harvest test-ghostty zed-deploy zed-harvest validate-zed test-zed
 
 PROFILE ?= zaki
 NIX_FILES := $(wildcard $(shell git ls-files --cached --others --exclude-standard -- '*.nix'))
@@ -33,10 +33,13 @@ test-profiles: ## Test profile ownership boundaries
 test-bootstrap: ## Test fresh-machine and rerun behavior
 	python3 -B -m unittest -v tests/test_bootstrap.py
 
+test-ghostty: ## Test Ghostty seed and deployment behavior
+	python3 -B -m unittest -v tests/test_ghostty_deployment.py
+
 test-zed: ## Test Zed seed, deployment, and harvesting behavior
 	python3 -B -m unittest -v tests/test_zed_deployment.py
 
-check: validate-omniwm validate-zed test-omniwm test-zed test-profiles test-bootstrap ## Run repository checks
+check: validate-omniwm validate-zed test-omniwm test-zed test-ghostty test-profiles test-bootstrap ## Run repository checks
 	nix fmt -- --check $(NIX_FILES)
 	sh -n bootstrap.sh
 	nix run nixpkgs#shellcheck -- bootstrap.sh
@@ -60,6 +63,15 @@ omniwm-deploy: ## Push repo OmniWM settings to the live file and restart it (ove
 
 omniwm-harvest: ## Pull live OmniWM settings back into the repo for review
 	diff -u apps/omniwm/settings.toml ~/.config/omniwm/settings.toml && echo "no changes" || cp ~/.config/omniwm/settings.toml apps/omniwm/settings.toml
+	@echo "Review the diff above (git diff), then commit what you want to keep."
+
+ghostty-deploy: ## Push the repository Ghostty seed into the live config (overwrites live edits)
+	mkdir -p ~/.config/ghostty
+	install -m 0644 apps/ghostty/config ~/.config/ghostty/config
+	@echo "Reload Ghostty with Cmd+Shift+, to apply."
+
+ghostty-harvest: ## Pull live Ghostty edits back into the repository seed for review
+	diff -u apps/ghostty/config ~/.config/ghostty/config && echo "no changes" || cp ~/.config/ghostty/config apps/ghostty/config
 	@echo "Review the diff above (git diff), then commit what you want to keep."
 
 zed-deploy: validate-zed ## Seed Zed with the selected profile's repository settings

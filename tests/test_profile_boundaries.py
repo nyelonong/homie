@@ -51,14 +51,16 @@ class ProfileBoundaryTest(unittest.TestCase):
             with self.subTest(profile="zaki@windows", path=path, name=name):
                 self.assertFalse(self.config_has("zaki@windows", path, name))
 
-    def test_ghostty_config_belongs_to_darwin_profiles(self) -> None:
+    def test_ghostty_seed_belongs_to_darwin_profiles(self) -> None:
         for profile in ("zaki", "zaki@cekat"):
             with self.subTest(profile=profile):
-                self.assertTrue(
+                self.assertTrue(self.config_has(profile, "home.activation", "seedGhostty"))
+                self.assertFalse(
                     self.config_has(profile, "home.file", ".config/ghostty/config")
                 )
 
         with self.subTest(profile="zaki@windows"):
+            self.assertFalse(self.config_has("zaki@windows", "home.activation", "seedGhostty"))
             self.assertFalse(
                 self.config_has("zaki@windows", "home.file", ".config/ghostty/config")
             )
