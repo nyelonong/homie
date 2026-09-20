@@ -16,9 +16,6 @@ in
       source = ../.skhdrc;
     };
 
-    file.".config/ghostty/config" = {
-      source = ../config/ghostty/config;
-    };
   };
 
   launchd.agents = lib.mkIf pkgs.stdenv.isDarwin {

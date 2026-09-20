@@ -50,6 +50,7 @@ flowchart LR
     B["modules/base.nix"] --> H["home.nix<br/>shared module list"]
     R["modules/runtimes.nix"] --> H
     S["modules/shell.nix"] --> H
+    G["modules/ghostty.nix<br/>Darwin only"] --> H
     H --> F["flake.nix"]
     HOST["hosts/*.nix<br/>active profile overrides"] --> F
     PERSONAL["hosts/personal.nix"] --> DESKTOP["modules/darwin-desktop.nix"]
@@ -57,6 +58,7 @@ flowchart LR
 ```
 
 `flake.nix` combines the shared module list from `home.nix` with one active host module.
+The shared Ghostty module activates only for Darwin profiles.
 The personal profile explicitly imports the skhd and OmniWM desktop lifecycle; operating
 system detection alone does not select personal desktop behavior. The flake also exposes
 locked Home Manager and mise apps used by bootstrap and the Make targets.
@@ -137,6 +139,7 @@ home.nix             ordered list of shared Home Manager modules
 modules/base.nix     packages, paths, environment, fonts, static dotfiles
 modules/runtimes.nix mise and direnv configuration
 modules/shell.nix    shared Zsh, aliases, and prompt configuration
+modules/ghostty.nix  shared Darwin Ghostty configuration
 modules/darwin-desktop.nix
                      personal skhd service and OmniWM activation lifecycle
 hosts/               active per-machine identity, packages, and overrides

@@ -53,6 +53,18 @@ class ProfileBoundaryTest(unittest.TestCase):
                 with self.subTest(profile=profile, path=path, name=name):
                     self.assertFalse(self.config_has(profile, path, name))
 
+    def test_ghostty_config_belongs_to_darwin_profiles(self) -> None:
+        for profile in ("zaki", "zaki@cekat"):
+            with self.subTest(profile=profile):
+                self.assertTrue(
+                    self.config_has(profile, "home.file", ".config/ghostty/config")
+                )
+
+        with self.subTest(profile="zaki@windows"):
+            self.assertFalse(
+                self.config_has("zaki@windows", "home.file", ".config/ghostty/config")
+            )
+
     def test_shell_has_no_cmux_pi_wrappers(self) -> None:
         for profile in ("zaki", "zaki@cekat", "zaki@windows"):
             with self.subTest(profile=profile):
