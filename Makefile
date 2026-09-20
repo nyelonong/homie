@@ -24,8 +24,8 @@ validate-zed:
 	python3 -m json.tool apps/zed/settings.json >/dev/null
 	python3 -m json.tool apps/zed/cekat-overlay.json >/dev/null
 
-test-omniwm: ## Test OmniWM seed, deployment, and display routing behavior
-	python3 -B -m unittest -v tests/test_omniwm_deployment.py tests/test_omniwm_display_routing.py
+test-omniwm: ## Test OmniWM seed and deployment behavior
+	python3 -B -m unittest -v tests/test_omniwm_deployment.py
 
 test-profiles: ## Test profile ownership boundaries
 	python3 -B -m unittest -v tests/test_profile_boundaries.py

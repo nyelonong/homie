@@ -45,7 +45,7 @@ The configuration has four layers:
    - **`modules/shell.nix`** owns shared Zsh aliases, generic Pi provider wrappers, zoxide, fzf, and Starship.
    - **`modules/skhd.nix`** owns skhd, `~/.skhdrc`, its launchd agent, and reload activation for Darwin profiles.
    - **`modules/ghostty.nix`** owns the Ghostty seed and the app-owned live config for Darwin profiles.
-   - **`modules/omniwm.nix`** owns the OmniWM settings seed and display-routing agent for Darwin profiles.
+   - **`modules/omniwm.nix`** owns the OmniWM settings seed for Darwin profiles.
 
 3. **`hosts/`** contains active profile ownership:
    - `personal.nix` owns personal-only packages and environment overrides.

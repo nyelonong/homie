@@ -67,7 +67,6 @@ class ProfileBoundaryTest(unittest.TestCase):
 
     def test_omniwm_lifecycle_belongs_to_darwin_profiles(self) -> None:
         boundaries = (
-            ("launchd.agents", "omniwmDisplayRouting"),
             ("home.activation", "seedOmniWM"),
         )
 
