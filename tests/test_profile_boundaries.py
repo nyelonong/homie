@@ -35,23 +35,21 @@ class ProfileBoundaryTest(unittest.TestCase):
             text=True,
         ).stdout
 
-    def test_desktop_lifecycle_belongs_only_to_personal_profile(self) -> None:
+    def test_skhd_belongs_to_darwin_profiles(self) -> None:
         boundaries = (
             ("launchd.agents", "skhd"),
-            ("launchd.agents", "omniwmDisplayRouting"),
-            ("home.activation", "seedOmniWM"),
             ("home.activation", "reloadSkhd"),
             ("home.file", ".skhdrc"),
         )
 
-        for path, name in boundaries:
-            with self.subTest(profile="zaki", path=path, name=name):
-                self.assertTrue(self.config_has("zaki", path, name))
-
-        for profile in ("zaki@cekat", "zaki@windows"):
+        for profile in ("zaki", "zaki@cekat"):
             for path, name in boundaries:
                 with self.subTest(profile=profile, path=path, name=name):
-                    self.assertFalse(self.config_has(profile, path, name))
+                    self.assertTrue(self.config_has(profile, path, name))
+
+        for path, name in boundaries:
+            with self.subTest(profile="zaki@windows", path=path, name=name):
+                self.assertFalse(self.config_has("zaki@windows", path, name))
 
     def test_ghostty_config_belongs_to_darwin_profiles(self) -> None:
         for profile in ("zaki", "zaki@cekat"):
@@ -64,6 +62,21 @@ class ProfileBoundaryTest(unittest.TestCase):
             self.assertFalse(
                 self.config_has("zaki@windows", "home.file", ".config/ghostty/config")
             )
+
+    def test_omniwm_lifecycle_belongs_to_darwin_profiles(self) -> None:
+        boundaries = (
+            ("launchd.agents", "omniwmDisplayRouting"),
+            ("home.activation", "seedOmniWM"),
+        )
+
+        for profile in ("zaki", "zaki@cekat"):
+            for path, name in boundaries:
+                with self.subTest(profile=profile, path=path, name=name):
+                    self.assertTrue(self.config_has(profile, path, name))
+
+        for path, name in boundaries:
+            with self.subTest(profile="zaki@windows", path=path, name=name):
+                self.assertFalse(self.config_has("zaki@windows", path, name))
 
     def test_shell_has_no_cmux_pi_wrappers(self) -> None:
         for profile in ("zaki", "zaki@cekat", "zaki@windows"):

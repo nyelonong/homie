@@ -1,6 +1,4 @@
 { pkgs, config, ... }: {
-  imports = [ ../modules/darwin-desktop.nix ];
-
   home.username = "zaki";
   home.homeDirectory = "/Users/zaki";
 

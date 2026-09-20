@@ -50,18 +50,18 @@ flowchart LR
     B["modules/base.nix"] --> H["home.nix<br/>shared module list"]
     R["modules/runtimes.nix"] --> H
     S["modules/shell.nix"] --> H
+    K["modules/skhd.nix<br/>Darwin only"] --> H
     G["modules/ghostty.nix<br/>Darwin only"] --> H
+    A["modules/omniwm.nix<br/>Darwin only"] --> H
     H --> F["flake.nix"]
     HOST["hosts/*.nix<br/>active profile overrides"] --> F
-    PERSONAL["hosts/personal.nix"] --> DESKTOP["modules/darwin-desktop.nix"]
     F --> OUT["homeConfigurations"]
 ```
 
 `flake.nix` combines the shared module list from `home.nix` with one active host module.
-The shared Ghostty module activates only for Darwin profiles.
-The personal profile explicitly imports the skhd and OmniWM desktop lifecycle; operating
-system detection alone does not select personal desktop behavior. The flake also exposes
-locked Home Manager and mise apps used by bootstrap and the Make targets.
+The shared skhd, Ghostty, and OmniWM modules activate only for Darwin profiles; profile-specific
+behavior stays in `hosts/`. The flake also exposes locked Home Manager and
+mise apps used by bootstrap and the Make targets.
 
 `config/` mirrors static paths below `~/.config`. This is why `config/starship.toml` is
 flat: Starship reads `~/.config/starship.toml`, while Helix and Zed keymap read files
@@ -139,9 +139,9 @@ home.nix             ordered list of shared Home Manager modules
 modules/base.nix     packages, paths, environment, fonts, static dotfiles
 modules/runtimes.nix mise and direnv configuration
 modules/shell.nix    shared Zsh, aliases, and prompt configuration
+modules/skhd.nix     shared Darwin skhd configuration and launchd lifecycle
 modules/ghostty.nix  shared Darwin Ghostty configuration
-modules/darwin-desktop.nix
-                     personal skhd service and OmniWM activation lifecycle
+modules/omniwm.nix   shared Darwin OmniWM seed and display routing
 hosts/               active per-machine identity, packages, and overrides
 history/hosts/       inactive former-employer configuration records
 config/              mirrors ~/.config (starship, helix, Zed keymap)
@@ -149,7 +149,7 @@ apps/omniwm/         seed for app-owned writable settings
 apps/zed/            seeds for app-owned writable settings and the Cekat overlay
 scripts/, tests/     validation and behavior regressions
 .gitconfig           → ~/.gitconfig
-.skhdrc              → ~/.skhdrc for the personal profile
+.skhdrc              → ~/.skhdrc for both Darwin profiles
 bootstrap.sh         validated fresh-machine and rerun setup
 ```
 

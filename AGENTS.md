@@ -39,13 +39,15 @@ The configuration has four layers:
    - **`modules/base.nix`** owns shared CLI packages, `GOPATH`/`GOBIN`, session PATH, fonts, XDG enablement, and static dotfile mappings. Add CLI tools here. Add a `home.file` entry when adding a file under `config/`.
    - **`modules/runtimes.nix`** owns direnv, mise integration, and global runtime pins.
    - **`modules/shell.nix`** owns shared Zsh aliases, generic Pi provider wrappers, zoxide, fzf, and Starship.
+   - **`modules/skhd.nix`** owns skhd, `~/.skhdrc`, its launchd agent, and reload activation for Darwin profiles.
    - **`modules/ghostty.nix`** owns the Ghostty config mapping for Darwin profiles.
+   - **`modules/omniwm.nix`** owns the OmniWM settings seed and display-routing agent for Darwin profiles.
 
 3. **`hosts/`** contains active profile ownership:
-   - `personal.nix` imports `modules/darwin-desktop.nix`, which owns skhd, `~/.skhdrc`, the launchd agent, and OmniWM seed/reload activation.
+   - `personal.nix` owns personal-only packages and environment overrides.
    - `cekat.nix` owns work-only packages, Go scopes, the `pi-cekat` wrapper, and the Cekat Zed model overlay.
    - `windows.nix` owns WSL identity and home paths.
-   Desktop behavior is selected explicitly by profile; shared Ghostty behavior is gated by `pkgs.stdenv.isDarwin`.
+   Darwin-only behavior shared by both macOS profiles is gated by `pkgs.stdenv.isDarwin`.
 
 4. **Configuration sources are separated by writer ownership.** `config/` mirrors paths below `~/.config`; `.gitconfig` and `.skhdrc` mirror files directly below `$HOME`. Home Manager deploys these as read-only store files. `apps/omniwm/settings.toml` is a seed because OmniWM rewrites its live settings; the live file remains writable and app-owned.
 
