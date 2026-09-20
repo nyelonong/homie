@@ -1,8 +1,7 @@
 monitorBarOverrides = []
 monitorDwindleOverrides = []
 monitorOrientationOverrides = []
-monitorRoutingOverrides = []
-schemaVersion = 1
+schemaVersion = 3
 
 [appearance]
 mode = "dark"
@@ -45,10 +44,10 @@ fullscreenUsesOuterGaps = false
 size = 15.0
 
 [gaps.outer]
-bottom = 5.0
-left = 40.0
-right = 64.0
-top = 10.0
+bottom = 0.0
+left = 0.0
+right = 0.0
+top = 0.0
 
 [general]
 animationsEnabled = true
@@ -87,6 +86,7 @@ margin = 1
 alwaysCenterSingleColumn = true
 centerFocusedColumn = "onOverflow"
 containerPrimarySpanPresets = [0.3333333333333333, 0.5, 0.7]
+defaultContainerPrimarySpan = 0.98
 infiniteLoop = false
 singleWindowFit = "container_primary_span"
 visibleContainerCount = 1
@@ -133,6 +133,7 @@ position = "center"
 widthPercent = 50.0
 
 [routing]
+arrangements = []
 mode = "macOS"
 
 [scratchpads]
@@ -160,7 +161,7 @@ revealHoldMilliseconds = 200.0
 revealModifier = "off"
 showFloatingWindows = true
 showLabels = true
-systemStatsButton = false
+systemStatsButton = true
 windowLevel = "popup"
 xOffset = 0.0
 yOffset = 0.0
@@ -428,6 +429,78 @@ id = "switchWorkspace.8"
 [[hotkeys]]
 binding = "Unassigned"
 id = "moveToWorkspace.8"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "switchWorkspaceSlot.1"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "moveToWorkspaceSlot.1"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "switchWorkspaceSlot.2"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "moveToWorkspaceSlot.2"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "switchWorkspaceSlot.3"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "moveToWorkspaceSlot.3"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "switchWorkspaceSlot.4"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "moveToWorkspaceSlot.4"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "switchWorkspaceSlot.5"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "moveToWorkspaceSlot.5"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "switchWorkspaceSlot.6"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "moveToWorkspaceSlot.6"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "switchWorkspaceSlot.7"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "moveToWorkspaceSlot.7"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "switchWorkspaceSlot.8"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "moveToWorkspaceSlot.8"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "switchWorkspaceSlot.9"
+
+[[hotkeys]]
+binding = "Unassigned"
+id = "moveToWorkspaceSlot.9"
 
 [[hotkeys]]
 binding = "Hyper+Tab"
@@ -926,6 +999,10 @@ binding = "Hyper+G"
 id = "toggleFocusedWindowFloating"
 
 [[hotkeys]]
+binding = "Unassigned"
+id = "closeFocusedWindow"
+
+[[hotkeys]]
 binding = "Control+Option+M"
 id = "openMenuAnywhere"
 
@@ -957,10 +1034,10 @@ id = "toggleSystemStats"
 id = "29E9D7C0-0DF9-461B-B44E-8E5431FFCF76"
 monitorDisplayUUID = "37D8832A-2D66-02CA-B9F7-8F30A301B230"
 monitorName = "Built-in Retina Display"
-outerGapBottom = 5.0
-outerGapLeft = 20.0
-outerGapRight = 64.0
-outerGapTop = 5.0
+outerGapBottom = 2.0
+outerGapLeft = 0.0
+outerGapRight = 0.0
+outerGapTop = 2.0
 
 [[monitorNiriOverrides]]
 alwaysCenterSingleColumn = true
