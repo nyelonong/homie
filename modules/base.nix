@@ -53,6 +53,7 @@
     };
 
     sessionPath = [
+      "${config.home.homeDirectory}/.cache/.bun/bin"
       "${config.home.homeDirectory}/Projects/go/bin"
       # Non-interactive shells do not receive mise's direct PATH activation.
       "${config.home.homeDirectory}/.local/share/mise/shims"
