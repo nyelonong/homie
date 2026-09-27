@@ -1,7 +1,7 @@
 add_newline = true
 command_timeout = 1000
 format = """
-╭─ $directory$git_branch$git_status$git_state$golang$rust$nodejs$swift$nix_shell$direnv$cmd_duration$jobs$battery
+╭─ $directory$git_branch$git_status$git_state$golang$rust$nodejs$swift$nix_shell$direnv$cmd_duration$jobs$battery$status
 ╰─ $character"""
 
 [character]

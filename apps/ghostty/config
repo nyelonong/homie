@@ -42,7 +42,7 @@ scrollback-limit = 100000
 window-save-state = always
 confirm-close-surface = false
 window-colorspace = display-p3
-macos-titlebar-style = transparent
+macos-titlebar-style = tabs
 
 shell-integration = detect
 shell-integration-features = cursor,sudo,title
@@ -52,7 +52,6 @@ notify-on-command-finish = unfocused
 notify-on-command-finish-action = bell,no-notify
 notify-on-command-finish-after = 5s
 quick-terminal-position = center
-window-subtitle = working-directory
 macos-option-as-alt = true
 
 keybind = super+d=new_split:right
