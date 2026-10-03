@@ -51,7 +51,7 @@ The configuration has four layers:
    - `personal.nix` owns personal-only packages and environment overrides.
    - `cekat.nix` owns work-only packages, kubectl aliases, and Go scopes.
    - `windows.nix` owns WSL identity and home paths.
-   Darwin-only behavior shared by both macOS profiles is gated by `pkgs.stdenv.isDarwin`.
+   Darwin-only behavior shared by both macOS profiles is gated by `pkgs.stdenv.hostPlatform.isDarwin`.
 
 4. **Configuration sources are separated by writer ownership.** `config/` mirrors paths below `~/.config`; `.gitconfig` and `.skhdrc` mirror files directly below `$HOME`. Home Manager deploys these as read-only store files. `apps/omniwm/settings.toml` and `apps/ghostty/config` are seeds because their live files remain writable and app-owned.
 
