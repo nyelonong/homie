@@ -13,6 +13,17 @@
         tree = "ll --tree";
         st = "git status";
         dif = "git diff";
+        k = "kubectl";
+        kgp = "kubectl get pods";
+        kgs = "kubectl get services";
+        kgd = "kubectl get deployments";
+        kgn = "kubectl get namespaces";
+        kd = "kubectl describe";
+        kl = "kubectl logs";
+        klf = "kubectl logs -f";
+        kex = "kubectl exec -it";
+        kctx = "kubectl config use-context";
+        kns = "kubectl config set-context --current --namespace";
       };
 
       initContent = lib.mkAfter ''
