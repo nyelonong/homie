@@ -4,5 +4,6 @@
   ./modules/shell.nix
   ./modules/skhd.nix
   ./modules/ghostty.nix
+  ./modules/herdr.nix
   ./modules/omniwm.nix
 ]

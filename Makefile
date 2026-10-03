@@ -2,6 +2,8 @@
 .PHONY: omniwm-deploy omniwm-harvest validate-omniwm test-omniwm test-profiles test-bootstrap
 .PHONY: ghostty-deploy ghostty-harvest test-ghostty zed-deploy zed-harvest validate-zed test-zed
 
+.PHONY: herdr-deploy herdr-harvest validate-herdr test-herdr
+
 PROFILE ?= zaki
 NIX_FILES := $(wildcard $(shell git ls-files --cached --others --exclude-standard -- '*.nix'))
 
@@ -14,7 +16,7 @@ switch: ## Apply config for PROFILE (default: zaki)
 update: ## Update flake inputs, then apply
 	nix flake update && $(MAKE) switch PROFILE=$(PROFILE)
 
-fmt: validate-omniwm validate-zed ## Format all Nix files and validate app settings
+fmt: validate-omniwm validate-zed validate-herdr ## Format all Nix files and validate app settings
 	nixfmt $(NIX_FILES)
 
 validate-omniwm:
@@ -22,6 +24,9 @@ validate-omniwm:
 
 validate-zed:
 	python3 -m json.tool apps/zed/settings.json >/dev/null
+
+validate-herdr:
+	python3 -c 'import pathlib, tomllib; tomllib.loads(pathlib.Path("apps/herdr/config.toml").read_text(encoding="utf-8"))'
 
 test-omniwm: ## Test OmniWM seed and deployment behavior
 	python3 -B -m unittest -v tests/test_omniwm_deployment.py
@@ -38,7 +43,10 @@ test-ghostty: ## Test Ghostty seed and deployment behavior
 test-zed: ## Test Zed seed, deployment, and harvesting behavior
 	python3 -B -m unittest -v tests/test_zed_deployment.py
 
-check: validate-omniwm validate-zed test-omniwm test-zed test-ghostty test-profiles test-bootstrap ## Run repository checks
+test-herdr: ## Test validated Herdr configuration transfer
+	python3 -B -m unittest -v tests/test_herdr_config.py
+
+check: validate-omniwm validate-zed validate-herdr test-omniwm test-zed test-ghostty test-herdr test-profiles test-bootstrap ## Run repository checks
 	nix fmt -- --check $(NIX_FILES)
 	sh -n bootstrap.sh
 	nix run nixpkgs#shellcheck -- bootstrap.sh
@@ -72,6 +80,14 @@ ghostty-deploy: ## Push the repository Ghostty seed into the live config (overwr
 ghostty-harvest: ## Pull live Ghostty edits back into the repository seed for review
 	diff -u apps/ghostty/config ~/.config/ghostty/config && echo "no changes" || cp ~/.config/ghostty/config apps/ghostty/config
 	@echo "Review the diff above (git diff), then commit what you want to keep."
+
+herdr-deploy: validate-herdr ## Push the repository Herdr seed into the live config (overwrites live edits)
+	python3 scripts/herdr-config.py apps/herdr/config.toml "$$HOME/.config/herdr/config.toml"
+	@echo "Apply with 'herdr server reload-config', or restart the Herdr client."
+
+herdr-harvest: ## Pull live Herdr edits into the repository seed for review
+	python3 scripts/herdr-config.py "$$HOME/.config/herdr/config.toml" apps/herdr/config.toml
+	@echo "Review with 'git diff -- apps/herdr/config.toml' before committing."
 
 zed-deploy: validate-zed ## Seed Zed with the shared repository settings
 	@set -eu; \

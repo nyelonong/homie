@@ -20,6 +20,11 @@ make omniwm-harvest             # pull live file → seed for review
 make ghostty-deploy             # push seed → live config
 make ghostty-harvest            # pull live config → seed for review
 
+# Herdr: validate TOML and atomically transfer writable config
+make herdr-deploy              # push seed → live config
+make herdr-harvest             # pull live config → seed for review
+make test-herdr                # in-process config-transfer unit tests
+
 # Update locked inputs and apply
 make update
 
@@ -33,6 +38,8 @@ nix flake show
 
 Validation = `make check`, the relevant native activation package builds, `make switch` succeeds, and the resulting shell behaves. CI builds all three active profiles on their native platforms.
 
+New Herdr integration checks stay local in `.local-tests/`, excluded through `.git/info/exclude`; they are not committed or included in `make check`.
+
 ## Architecture
 
 The configuration has four layers:
@@ -45,6 +52,7 @@ The configuration has four layers:
    - **`modules/shell.nix`** owns shared Zsh aliases, generic Pi provider wrappers, zoxide, fzf, and Starship.
    - **`modules/skhd.nix`** owns skhd, `~/.skhdrc`, its launchd agent, and reload activation for Darwin profiles.
    - **`modules/ghostty.nix`** owns the Ghostty seed and the app-owned live config for Darwin profiles.
+   - **`modules/herdr.nix`** owns the Darwin-only Herdr package and writable config seed.
    - **`modules/omniwm.nix`** owns the OmniWM settings seed for Darwin profiles.
 
 3. **`hosts/`** contains active profile ownership:

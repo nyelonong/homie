@@ -1,0 +1,12 @@
+onboarding = false
+
+[terminal]
+# Pin the pane shell. Left unset, Herdr falls back to the launching process's
+# $SHELL, so panes become bash and skip the zsh setup in ~/.config/zsh.
+default_shell = "/bin/zsh"
+
+[[keys.command]]
+key = "prefix+f"
+type = "plugin_action"
+command = "herdr-file-viewer.open-file-viewer"
+description = "open file viewer"
