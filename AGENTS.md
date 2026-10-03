@@ -49,7 +49,7 @@ The configuration has four layers:
 
 3. **`hosts/`** contains active profile ownership:
    - `personal.nix` owns personal-only packages and environment overrides.
-   - `cekat.nix` owns work-only packages, Go scopes, the `pi-cekat` wrapper, and the Cekat Zed model overlay.
+   - `cekat.nix` owns work-only packages, Go scopes, and the Cekat Zed model overlay.
    - `windows.nix` owns WSL identity and home paths.
    Darwin-only behavior shared by both macOS profiles is gated by `pkgs.stdenv.isDarwin`.
 

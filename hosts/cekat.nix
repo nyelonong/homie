@@ -10,8 +10,6 @@ let
   zedCekatSeed = builtins.toFile "zed-cekat-settings.json" (builtins.toJSON zedSettings);
 in
 {
-  programs.zsh.shellAliases.pi-cekat = "PI_CODING_AGENT_DIR=$HOME/.pi/agent-cekat pi";
-
   home.username = "zaki";
   home.homeDirectory = "/Users/zaki";
 
