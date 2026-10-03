@@ -89,7 +89,7 @@ class ProfileBoundaryTest(unittest.TestCase):
                 self.assertNotIn("function pi-openrouter()", init)
                 self.assertNotIn("CMUX_BUNDLED_CLI_PATH", init)
 
-    def test_zed_settings_are_app_owned_and_work_seed_is_profile_specific(self) -> None:
+    def test_zed_settings_are_app_owned_and_use_the_shared_seed(self) -> None:
         for profile in ("zaki", "zaki@cekat", "zaki@windows"):
             with self.subTest(profile=profile):
                 self.assertTrue(self.config_has(profile, "home.activation", "seedZed"))
@@ -101,10 +101,7 @@ class ProfileBoundaryTest(unittest.TestCase):
                     )
                 )
 
-        self.assertTrue(
-            self.config_has("zaki@cekat", "home.activation", "seedCekatZed")
-        )
-        for profile in ("zaki", "zaki@windows"):
+        for profile in ("zaki", "zaki@cekat", "zaki@windows"):
             with self.subTest(profile=profile):
                 self.assertFalse(
                     self.config_has(profile, "home.activation", "seedCekatZed")

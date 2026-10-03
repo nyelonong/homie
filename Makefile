@@ -22,7 +22,6 @@ validate-omniwm:
 
 validate-zed:
 	python3 -m json.tool apps/zed/settings.json >/dev/null
-	python3 -m json.tool apps/zed/cekat-overlay.json >/dev/null
 
 test-omniwm: ## Test OmniWM seed and deployment behavior
 	python3 -B -m unittest -v tests/test_omniwm_deployment.py
@@ -74,61 +73,35 @@ ghostty-harvest: ## Pull live Ghostty edits back into the repository seed for re
 	diff -u apps/ghostty/config ~/.config/ghostty/config && echo "no changes" || cp ~/.config/ghostty/config apps/ghostty/config
 	@echo "Review the diff above (git diff), then commit what you want to keep."
 
-zed-deploy: validate-zed ## Seed Zed with the selected profile's repository settings
+zed-deploy: validate-zed ## Seed Zed with the shared repository settings
 	@set -eu; \
 	case "$(PROFILE)" in \
-	  zaki|zaki@windows) seed=apps/zed/settings.json ;; \
-	  zaki@cekat) seed=apps/zed/settings.json; overlay=apps/zed/cekat-overlay.json ;; \
+	  zaki|zaki@cekat|zaki@windows) seed=apps/zed/settings.json ;; \
 	  *) echo "unsupported PROFILE=$(PROFILE)" >&2; exit 2 ;; \
 	esac; \
 	live="$$HOME/.config/zed/settings.json"; \
 	mkdir -p "$$(dirname "$$live")"; \
 	tmp="$$(mktemp "$${live}.tmp.XXXXXX")"; \
 	trap 'rm -f "$$tmp"' EXIT HUP INT TERM; \
-	if [ "$(PROFILE)" = "zaki@cekat" ]; then \
-	  jq -s '.[0] * .[1]' "$${seed}" "$${overlay}" > "$$tmp"; \
-	else \
-	  jq . "$${seed}" > "$$tmp"; \
-	fi; \
+	jq . "$${seed}" > "$$tmp"; \
 	chmod 0644 "$$tmp"; \
 	mv -f "$$tmp" "$$live"; \
 	trap - EXIT HUP INT TERM
 
-zed-harvest: validate-zed ## Pull live Zed settings back into the selected profile seed
+zed-harvest: validate-zed ## Pull live Zed settings back into the shared repository seed
 	@set -eu; \
 	live="$$HOME/.config/zed/settings.json"; \
 	if [ ! -f "$$live" ]; then echo "missing Zed settings: $$live" >&2; exit 1; fi; \
-	jq -e 'type == "object"' "$$live" >/dev/null; \
 	case "$(PROFILE)" in \
-	  zaki|zaki@windows) \
-	    if jq -e '(.agent_servers? // {}) | if type == "object" then has("pi-acp") else false end' "$$live" >/dev/null; then \
-	      echo "live settings contain Cekat-only agent_servers.pi-acp; use PROFILE=zaki@cekat" >&2; \
-	      exit 1; \
-	    fi; \
-	    tmp="$$(mktemp apps/zed/settings.json.tmp.XXXXXX)"; \
-	    trap 'rm -f "$$tmp"' EXIT HUP INT TERM; \
-	    jq . "$$live" > "$$tmp"; \
-	    chmod 0644 "$$tmp"; \
-	    mv -f "$$tmp" apps/zed/settings.json; \
-	    trap - EXIT HUP INT TERM ;; \
-	  zaki@cekat) \
-	    shared_tmp=; \
-	    overlay_tmp=; \
-	    trap 'rm -f "$$shared_tmp" "$$overlay_tmp"' EXIT HUP INT TERM; \
-	    shared_tmp="$$(mktemp apps/zed/settings.json.tmp.XXXXXX)"; \
-	    overlay_tmp="$$(mktemp apps/zed/cekat-overlay.json.tmp.XXXXXX)"; \
-	    jq 'del(.agent_servers."pi-acp") | if (.agent_servers? | type) == "object" and (.agent_servers | length) == 0 then del(.agent_servers) else . end' "$$live" > "$$shared_tmp"; \
-	    if jq -e '(.agent_servers? // {}) | if type == "object" then has("pi-acp") else false end' "$$live" >/dev/null; then \
-	      jq '{agent_servers: {"pi-acp": .agent_servers["pi-acp"]}}' "$$live" > "$$overlay_tmp"; \
-	    else \
-	      printf '{}\\n' > "$$overlay_tmp"; \
-	    fi; \
-	    chmod 0644 "$$shared_tmp" "$$overlay_tmp"; \
-	    mv -f "$$shared_tmp" apps/zed/settings.json; \
-	    mv -f "$$overlay_tmp" apps/zed/cekat-overlay.json; \
-	    trap - EXIT HUP INT TERM ;; \
+	  zaki|zaki@cekat|zaki@windows) ;; \
 	  *) echo "unsupported PROFILE=$(PROFILE)" >&2; exit 2 ;; \
-	esac
+	esac; \
+	tmp="$$(mktemp apps/zed/settings.json.tmp.XXXXXX)"; \
+	trap 'rm -f "$$tmp"' EXIT HUP INT TERM; \
+	jq -se 'if length != 1 or (.[0] | type) != "object" then error("live settings must contain exactly one JSON object") elif (.[0].agent_servers? // {} | if type == "object" then has("pi-acp") else false end) then error("live settings contain agent_servers.pi-acp; remove it before harvesting shared settings") else .[0] end' "$$live" > "$$tmp"; \
+	chmod 0644 "$$tmp"; \
+	mv -f "$$tmp" apps/zed/settings.json; \
+	trap - EXIT HUP INT TERM
 
 help: ## List targets
 	@grep -E '^[[:alnum:]_-]+:.*##' $(MAKEFILE_LIST) | sed 's/:.*##/\t/'

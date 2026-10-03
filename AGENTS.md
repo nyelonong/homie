@@ -49,7 +49,7 @@ The configuration has four layers:
 
 3. **`hosts/`** contains active profile ownership:
    - `personal.nix` owns personal-only packages and environment overrides.
-   - `cekat.nix` owns work-only packages, Go scopes, and the Cekat Zed model overlay.
+   - `cekat.nix` owns work-only packages, kubectl aliases, and Go scopes.
    - `windows.nix` owns WSL identity and home paths.
    Darwin-only behavior shared by both macOS profiles is gated by `pkgs.stdenv.isDarwin`.
 
@@ -61,7 +61,7 @@ The configuration has four layers:
 
 - **Three package sources coexist by design.** Nix owns CLI tools; mise owns language runtimes; Brew owns macOS GUI applications and anything not suited to Nix. Do not move language runtimes into `home.packages` or CLI tools into Brew.
 - **`config/` follows target paths.** `config/starship.toml` is intentionally flat because its target is `~/.config/starship.toml`; Helix and Zed keymap use nested target directories. App-owned settings such as OmniWM and Zed live under `apps/`.
-- **Zed's seed files must remain strict JSON.** `hosts/cekat.nix` parses `apps/zed/settings.json` and `apps/zed/cekat-overlay.json` with `builtins.fromJSON`. JSON comments and trailing commas break every profile evaluation.
+- **Zed's shared seed must remain strict JSON.** `make validate-zed` checks `apps/zed/settings.json`; JSON comments and trailing commas are not supported.
 - **New static config needs an explicit mapping.** `modules/base.nix` no longer recursively links all of `config/`, allowing profile-specific overrides. App-owned settings are seeded by activation and remain writable by the app.
 - **App-owned settings use seeds.** Graduate a tool from `config/` to `apps/<tool>/` when its live file must stay writable instead of a read-only symlink. Add explicit deploy/harvest behavior rather than making the live file read-only.
 - **Runtime pins live in `modules/runtimes.nix`.** After changing one, run `make switch` and `mise install`. Projects may still override pins with `mise.toml` or `.tool-versions`.
