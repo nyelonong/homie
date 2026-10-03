@@ -7,13 +7,13 @@ font-family-bold = Hack Nerd Font Mono Bold
 font-family-bold = FiraCode Nerd Font Mono Bold
 font-family-bold-italic = Hack Nerd Font Mono Bold Italic
 font-family-italic = Hack Nerd Font Mono Italic
-font-size = 20
+font-size = 15
 
 # Keep the terminal palette aligned with the Zed "One Dark" / "One Light" pair.
-theme = light:Atom One Light,dark:Atom One Dark
+theme = Atom One Dark
 
 # Translucent window with a blurred backdrop.
-background-opacity = 0.58
+background-opacity = 0.78
 background-blur = 20
 background-opacity-cells = true
 
@@ -42,7 +42,10 @@ scrollback-limit = 100000
 window-save-state = always
 confirm-close-surface = false
 window-colorspace = display-p3
-macos-titlebar-style = tabs
+# Herdr draws its own workspace/tab sidebar, so the native title bar and its
+# tab strip are redundant chrome. "hidden" floats the traffic lights over the
+# content instead.
+macos-titlebar-style = hidden
 
 shell-integration = detect
 shell-integration-features = cursor,sudo,title
@@ -53,6 +56,11 @@ notify-on-command-finish-action = bell,no-notify
 notify-on-command-finish-after = 5s
 quick-terminal-position = center
 macos-option-as-alt = true
+
+# Ghostty's own drop-down terminal, toggled from anywhere in the system.
+# The action ships unbound and has no CLI equivalent, so it cannot be driven
+# from skhd; `global:` is what lets it fire while another app is focused.
+keybind = global:cmd+alt+backslash=toggle_quick_terminal
 
 keybind = super+d=new_split:right
 keybind = super+shift+d=new_split:down
