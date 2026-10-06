@@ -6,4 +6,5 @@
   ./modules/ghostty.nix
   ./modules/herdr.nix
   ./modules/omniwm.nix
+  ./modules/macos-defaults.nix
 ]

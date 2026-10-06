@@ -58,6 +58,28 @@ class ProfileBoundaryTest(unittest.TestCase):
             self.assertFalse(tools & self.package_names("zaki@windows"))
             self.assertFalse(self.config_has("zaki@windows", "programs.zsh.shellAliases", "kgp"))
 
+    def test_macos_defaults_belong_to_darwin_profiles(self) -> None:
+        expected = {
+            "NSGlobalDomain": {"AppleInterfaceStyle": "Dark", "_HIHideMenuBar": True},
+            "com.apple.dock": {"autohide": True},
+        }
+
+        for profile in ("zaki", "zaki@cekat", "zaki@windows"):
+            with self.subTest(profile=profile):
+                result = subprocess.run(
+                    ["nix", "eval", "--json", f'.#homeConfigurations."{profile}".config.targets.darwin.defaults'],
+                    cwd=ROOT,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+                set_values = {
+                    domain: {key: value for key, value in keys.items() if value is not None}
+                    for domain, keys in json.loads(result.stdout).items()
+                }
+                defaults = {domain: keys for domain, keys in set_values.items() if keys}
+                self.assertEqual(defaults, {} if profile == "zaki@windows" else expected)
+
     def test_org_go_variables_belong_only_to_cekat(self) -> None:
         for profile, expected in (("zaki@cekat", True), ("zaki", False), ("zaki@windows", False)):
             for name in ("GOPRIVATE", "GONOSUMDB"):
