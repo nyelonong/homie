@@ -35,6 +35,37 @@ class ProfileBoundaryTest(unittest.TestCase):
             text=True,
         ).stdout
 
+    def package_names(self, profile: str) -> set[str]:
+        target = f'.#homeConfigurations."{profile}".config.home.packages'
+        result = subprocess.run(
+            ["nix", "eval", "--json", target, "--apply", "ps: map (p: p.pname or p.name) ps"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        return set(json.loads(result.stdout))
+
+    def test_kubernetes_tools_belong_to_personal_and_are_inherited_by_cekat(self) -> None:
+        tools = {"kubectl", "kubernetes-helm", "k9s", "opentofu", "mongosh"}
+
+        for profile in ("zaki", "zaki@cekat"):
+            with self.subTest(profile=profile):
+                self.assertLessEqual(tools, self.package_names(profile))
+                self.assertTrue(self.config_has(profile, "programs.zsh.shellAliases", "kgp"))
+
+        with self.subTest(profile="zaki@windows"):
+            self.assertFalse(tools & self.package_names("zaki@windows"))
+            self.assertFalse(self.config_has("zaki@windows", "programs.zsh.shellAliases", "kgp"))
+
+    def test_org_go_variables_belong_only_to_cekat(self) -> None:
+        for profile, expected in (("zaki@cekat", True), ("zaki", False), ("zaki@windows", False)):
+            for name in ("GOPRIVATE", "GONOSUMDB"):
+                with self.subTest(profile=profile, name=name):
+                    self.assertEqual(
+                        self.config_has(profile, "home.sessionVariables", name), expected
+                    )
+
     def test_skhd_belongs_to_darwin_profiles(self) -> None:
         boundaries = (
             ("launchd.agents", "skhd"),
