@@ -2,7 +2,7 @@
 .PHONY: omniwm-deploy omniwm-harvest validate-omniwm test-omniwm test-profiles test-bootstrap
 .PHONY: ghostty-deploy ghostty-harvest test-ghostty zed-deploy zed-harvest validate-zed test-zed
 
-.PHONY: herdr-deploy herdr-harvest validate-herdr test-herdr
+.PHONY: herdr-deploy herdr-harvest validate-herdr test-herdr doctor test-doctor
 
 PROFILE ?= zaki
 NIX_FILES := $(wildcard $(shell git ls-files --cached --others --exclude-standard -- '*.nix'))
@@ -46,7 +46,13 @@ test-zed: ## Test Zed seed, deployment, and harvesting behavior
 test-herdr: ## Test validated Herdr configuration transfer
 	python3 -B -m unittest -v tests/test_herdr_config.py
 
-check: validate-omniwm validate-zed validate-herdr test-omniwm test-zed test-ghostty test-herdr test-profiles test-bootstrap ## Run repository checks
+test-doctor: ## Test the stack health check against simulated system output
+	python3 -B -m unittest -v tests/test_doctor.py
+
+doctor: ## Check OmniWM, skhd, Secure Input, the Caps Lock remap, and seed drift (read-only)
+	python3 scripts/doctor.py
+
+check: validate-omniwm validate-zed validate-herdr test-omniwm test-zed test-ghostty test-herdr test-doctor test-profiles test-bootstrap ## Run repository checks
 	nix fmt -- --check $(NIX_FILES)
 	sh -n bootstrap.sh
 	nix run nixpkgs#shellcheck -- bootstrap.sh
