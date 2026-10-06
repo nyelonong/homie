@@ -46,9 +46,9 @@ fullscreenUsesOuterGaps = false
 size = 15.0
 
 [gaps.outer]
-bottom = 0.0
-left = 0.0
-right = 0.0
+bottom = 15.0
+left = 15.0
+right = 15.0
 top = 0.0
 
 [general]
