@@ -13,6 +13,7 @@
         tree = "ll --tree";
         st = "git status";
         dif = "git diff";
+        nq = "nu -c";
       };
 
       initContent = lib.mkAfter ''

@@ -37,6 +37,9 @@
       fd
       ripgrep
       jq
+      jc
+      miller
+      nushell
       tealdeer
 
       # fonts
