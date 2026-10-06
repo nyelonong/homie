@@ -5,9 +5,19 @@
   home.packages = with pkgs; [
     # LLM
     apfel-llm
+    hunk
+    llmfit
 
     # Networking
     cloudflared
+
+    # Secrets
+    doppler
+    infisical
+
+    # macOS and PHP
+    duti
+    phpPackages.composer
   ];
 
   home.sessionVariables = {

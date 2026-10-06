@@ -41,6 +41,11 @@
       miller
       nushell
       tealdeer
+      tmux
+      glow
+      helix
+      cmake
+      ffmpeg
 
       # fonts
       pkgs.nerd-fonts.fira-code

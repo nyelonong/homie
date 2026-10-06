@@ -20,6 +20,7 @@
   home.packages = with pkgs; [
     opentofu
     kubectl
+    kubernetes-helm
     k9s
     mongosh
   ];
