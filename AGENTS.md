@@ -12,6 +12,12 @@ Personal dotfiles managed declaratively with a **Nix flake + Home Manager** for 
 # Apply with the Home Manager version locked by this flake
 make switch                     # PROFILE=zaki default
 
+# Install the GUI apps recorded in Brewfile (zaki profile only)
+make brew-bundle
+
+# Read-only check of OmniWM, skhd, Secure Input, the Caps Lock remap, and seed drift
+make doctor
+
 # OmniWM: the live settings file is app-owned, not a symlink
 make omniwm-deploy              # stop app, push seed → live file, restart
 make omniwm-harvest             # pull live file → seed for review

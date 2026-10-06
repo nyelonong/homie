@@ -2,7 +2,7 @@
 .PHONY: omniwm-deploy omniwm-harvest validate-omniwm test-omniwm test-profiles test-bootstrap
 .PHONY: ghostty-deploy ghostty-harvest test-ghostty zed-deploy zed-harvest validate-zed test-zed
 
-.PHONY: herdr-deploy herdr-harvest validate-herdr test-herdr doctor test-doctor
+.PHONY: herdr-deploy herdr-harvest validate-herdr test-herdr doctor test-doctor brew-bundle
 
 PROFILE ?= zaki
 NIX_FILES := $(wildcard $(shell git ls-files --cached --others --exclude-standard -- '*.nix'))
@@ -12,6 +12,9 @@ install: ## Apply config with the locked Home Manager
 
 switch: ## Apply config for PROFILE (default: zaki)
 	nix run .#home-manager -- switch --flake .#$(PROFILE)
+
+brew-bundle: ## Install the casks in Brewfile without upgrading installed ones
+	brew bundle --file=Brewfile --no-upgrade
 
 update: ## Update flake inputs, then apply
 	nix flake update && $(MAKE) switch PROFILE=$(PROFILE)
