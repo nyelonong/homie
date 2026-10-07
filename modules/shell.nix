@@ -16,7 +16,10 @@
         nq = "nu -c";
       };
 
+      # Terminals send Ctrl-U for Cmd-Backspace; zsh's default kill-whole-line also deletes
+      # right of the cursor, unlike macOS.
       initContent = lib.mkAfter ''
+        bindkey '^U' backward-kill-line
         if [ -r "${config.home.homeDirectory}/.zshrc.local" ]; then
           source "${config.home.homeDirectory}/.zshrc.local"
         fi
