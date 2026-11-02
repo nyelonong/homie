@@ -60,8 +60,9 @@ class ProfileBoundaryTest(unittest.TestCase):
 
     def test_macos_defaults_belong_to_darwin_profiles(self) -> None:
         expected = {
-            "NSGlobalDomain": {"AppleInterfaceStyle": "Dark", "_HIHideMenuBar": True},
+            "NSGlobalDomain": {"AppleInterfaceStyle": "Dark", "_HIHideMenuBar": False},
             "com.apple.dock": {"autohide": True},
+            "com.apple.menuextra.clock": {"ShowDate": 1, "ShowDayOfWeek": True},
         }
 
         for profile in ("zaki", "zaki@cekat", "zaki@windows"):
