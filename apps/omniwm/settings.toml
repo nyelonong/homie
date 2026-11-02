@@ -43,12 +43,12 @@ raiseOnMouseFocus = true
 
 [gaps]
 fullscreenUsesOuterGaps = false
-size = 15.0
+size = 10.0
 
 [gaps.outer]
-bottom = 15.0
-left = 15.0
-right = 15.0
+bottom = 0.0
+left = 0.0
+right = 0.0
 top = 0.0
 
 [general]
@@ -58,7 +58,7 @@ defaultLayoutType = "niri"
 hotkeysEnabled = true
 hyperKeyModifiers = "Control+Option+Command"
 ipcEnabled = true
-preventSleepEnabled = false
+preventSleepEnabled = true
 systemHyperTrigger = "Caps Lock"
 updateChecksEnabled = true
 
