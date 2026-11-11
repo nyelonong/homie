@@ -43,5 +43,7 @@
 
   home.sessionVariables = {
     "GEMINI_CLI_HOME" = "${config.home.homeDirectory}/.gemini";
+    "CINETIC_PYTHON" = "${config.home.homeDirectory}/.venvs/cinetic/bin/python";
+    "EARSHOT_PYTHON" = "${config.home.homeDirectory}/.local/share/earshot/.venv/bin/python";
   };
 }
