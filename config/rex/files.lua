@@ -32,4 +32,3 @@ rex.action{
 }
 
 rex.bind("cmd+e", "yazi")
-rex.bind("cmd+y", "client.quick_look")
