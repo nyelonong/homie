@@ -25,6 +25,16 @@
     # Networking
     cloudflared
 
+    # NordPass picker over the np CLI, which is installed outside Nix
+    (writeShellApplication {
+      name = "npf";
+      runtimeInputs = [
+        fzf
+        jq
+      ];
+      text = builtins.readFile ../scripts/npf.sh;
+    })
+
     # Secrets
     doppler
     infisical
