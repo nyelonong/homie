@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   programs = {
     zsh = {
@@ -14,6 +19,9 @@
         st = "git status";
         dif = "git diff";
         nq = "nu -c";
+      }
+      // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
+        cb = "git branch --show-current | tr -d '\\n' | pbcopy";
       };
 
       # Terminals send Ctrl-U for Cmd-Backspace; zsh's default kill-whole-line also deletes
