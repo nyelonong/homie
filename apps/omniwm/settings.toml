@@ -260,6 +260,11 @@ minHeight = 48.0
 minWidth = 90.0
 
 [[appRules]]
+assignToWorkspace = "1"
+bundleId = "com.superlogical.rex"
+id = "314607FA-6F62-48A6-BFC6-354916B6C3A0"
+
+[[appRules]]
 bundleId = "com.microsoft.Outlook"
 id = "8ECAB78B-BCDD-4245-BC25-1609A49B1C86"
 minHeight = 650.0
