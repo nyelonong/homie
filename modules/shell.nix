@@ -21,7 +21,7 @@
         nq = "nu -c";
       }
       // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
-        cb = "git branch --show-current | tr -d '\\n' | pbcopy";
+        cb = "git branch --show-current | tr -d '\\n' | pbcopy && git status";
       };
 
       # Terminals send Ctrl-U for Cmd-Backspace; zsh's default kill-whole-line also deletes
