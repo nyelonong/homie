@@ -41,8 +41,9 @@
     mongosh
   ];
 
-  home.file.".config/rex/init.lua" = {
-    source = ../config/rex/init.lua;
+  home.file.".config/rex" = {
+    source = ../config/rex;
+    recursive = true;
     force = true;
   };
 
