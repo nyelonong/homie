@@ -41,6 +41,11 @@
     mongosh
   ];
 
+  home.file.".config/rex/init.lua" = {
+    source = ../config/rex/init.lua;
+    force = true;
+  };
+
   home.sessionVariables = {
     "GEMINI_CLI_HOME" = "${config.home.homeDirectory}/.gemini";
     "CINETIC_PYTHON" = "${config.home.homeDirectory}/.venvs/cinetic/bin/python";
